@@ -5,7 +5,7 @@ import { useImageManager } from '../../hooks/useImageManager';
 import { stylesUI } from '../../styles/stylesUI';
 import { useAppStore } from '../../store';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomButton from '../../components/CustomButton'; // Import CustomButton
 
 type AssistanceRouteProp = RouteProp<{ Assistance: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Assistance'>;
 
@@ -18,7 +18,7 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
   const assistanceTechnician = useAppStore((state) => state.assistanceTechnician);
   const assistanceImages = useAppStore((state) => state.assistanceImages);
 
-  const { pickImage, takePicture, deleteImage, processAndSaveImage } = useImageManager('assistance', currentStepIndex);
+  const { pickImage, takePicture, deleteImage, processAndSaveImage } = useImageManager('assistance');
   const route = useRoute<AssistanceRouteProp>();
   const navigation = useNavigation<any>();
 
@@ -37,22 +37,30 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Verificação de Imagens e Técnico</Text>
+        <View>
+            <Text style={styles.title}>Verificação de Imagens e Técnico</Text>
 
-      <Text style={stylesUI.labelText}>Técnico que realizou os testes:</Text>
-      <TextInput
-        style={stylesUI.input}
-        placeholder="Nome do Técnico"
-        value={assistanceTechnician || ''}
-        onChangeText={(text) => updateReportField('assistanceTechnician', text)}
-      />
+            <Text style={stylesUI.labelText}>Técnico que realizou os testes:</Text>
+            <TextInput
+                style={stylesUI.input}
+                placeholder="Nome do Técnico"
+                value={assistanceTechnician || ''}
+                onChangeText={(text) => updateReportField('assistanceTechnician', text)}
+            />
 
-      <ImageAttachment
-        attachedImages={assistanceImages}
-        onPickImage={pickImage}
-        onTakePicture={() => takePicture(4)}
-        onDeleteImage={deleteImage}
-      />
+            <ImageAttachment
+                attachedImages={assistanceImages}
+                onPickImage={pickImage}
+                onTakePicture={() => takePicture(4)}
+                onDeleteImage={deleteImage}
+            />
+        </View>
+        <View style={styles.buttonContainer}>
+            <CustomButton
+                title="Fechar formulário"
+                onPress={() => navigation.navigate('Select')}
+            />
+        </View>
     </View>
   );
 };
@@ -61,12 +69,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    justifyContent: 'space-between', // Push button to bottom
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  buttonContainer: {
+    paddingBottom: 20, // Add some padding at the bottom
+  }
 });
 
 export default ImagesCheckUp;

@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   buttonText:{
-    color: Colors.primaryBlue,
+    color: Colors.textLight,
     fontWeight: 'bold',
     fontSize: 18,
   },
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
   labelText:{
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     marginBottom: 4,
     marginLeft: 10,
   },
@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
     elevation: 20, // Sombra para Android
   },
   imageDescriptionText: {
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     fontSize: 12,
     marginTop: 5,
     textAlign: 'center',

@@ -3,7 +3,7 @@ import { Colors } from '../../assets/Colors';
 
 export const style = StyleSheet.create({
  button:{
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.primaryOrange,
     width: '100%',
     borderWidth: 1,
     borderColor: Colors.lightBorder,
@@ -17,7 +17,7 @@ export const style = StyleSheet.create({
     gap: 8,
   },
   buttonText:{
-    color: Colors.primaryBlue,
+    color: Colors.white,
     fontWeight: 'bold',
     fontSize: 18,
   },

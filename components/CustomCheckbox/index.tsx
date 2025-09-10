@@ -10,7 +10,7 @@ interface CustomCheckboxProps extends CheckboxProps {
   labelStyle?: StyleProp<TextStyle>;
 }
 
-const CustomCheckbox: FC<CustomCheckboxProps> = ({ label, value, onValueChange, color = Colors.primaryBlue, style, containerStyle, labelStyle, ...props }) => {
+const CustomCheckbox: FC<CustomCheckboxProps> = ({ label, value, onValueChange, color = Colors.green, style, containerStyle, labelStyle, ...props }) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <Checkbox

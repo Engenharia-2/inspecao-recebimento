@@ -5,7 +5,7 @@ export const stylesUI = StyleSheet.create({
   noDevicesText: {
     textAlign: 'center',
     marginTop: 20,
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     fontSize: 16,
   },
   backgroundImage: {
@@ -40,7 +40,7 @@ export const stylesUI = StyleSheet.create({
     gap: 8,
   },
   buttonText:{
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     fontWeight: 'bold',
     fontSize: 18,
   },
@@ -84,7 +84,7 @@ export const stylesUI = StyleSheet.create({
     marginBottom: 40,
   },
   headerText:{
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -93,7 +93,7 @@ export const stylesUI = StyleSheet.create({
   labelText:{
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     marginBottom: 4,
     marginLeft: 10,
   },

@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import FinalCheckStep from '../steps/QualitySteps/FinalCheckStep';
 import FinalImagesCheck from '../steps/QualitySteps/FinalImagesCheck';
+import FinalObservationStep from '../steps/QualitySteps/FinalObservationStep'; // Import new step
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 
 type QualityScreenRouteProp = RouteProp<{ Quality: { returnStepIndex?: number } }, 'Quality'>;
@@ -34,6 +35,9 @@ const QualityScreen = () => {
       </View>
       <View key="2">
         <FinalImagesCheck currentStepIndex={currentPage} />
+      </View>
+      <View key="3">
+        <FinalObservationStep />
       </View>
     </PagerView>
   );

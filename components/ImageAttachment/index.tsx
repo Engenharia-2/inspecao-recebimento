@@ -43,11 +43,11 @@ const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage
       <View style={styles.imgButtonsContainer}>
         <TouchableOpacity onPress={() => handleAction(onPickImage)} style={[styles.button, styles.buttonImg]}>
           <Text style={styles.buttonText}>Imagem</Text>
-          <MaterialIcons name="photo-library" size={40} color={Colors.primaryBlue} />
+          <MaterialIcons name="photo-library" size={40} color={Colors.textLight} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleAction(onTakePicture)} style={[styles.button, styles.buttonImg]}>
           <Text style={styles.buttonText}>Foto</Text>
-          <MaterialIcons name="camera-alt" size={40} color={Colors.primaryBlue}/>
+          <MaterialIcons name="camera-alt" size={40} color={Colors.textLight}/>
         </TouchableOpacity>
       </View>
       {attachedImages.length > 0 ? (

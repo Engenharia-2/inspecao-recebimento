@@ -3,13 +3,50 @@ import { AppStore } from '../index';
 import { ReportData, CustomField, AttachedImage } from '../../report/types';
 import { debounce } from 'lodash';
 
+// --- COMPLETION CHECK LOGIC ---
+const isValueFilled = (value: any): boolean => {
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
+  }
+  return value !== null && value !== undefined;
+};
+
+const isEntryFilled = (state: ReportState): boolean => {
+  const { op, openDate, serialNumber, model, orderType, invoice, entryTechnician } = state;
+  return (
+    isValueFilled(op) &&
+    isValueFilled(openDate) &&
+    isValueFilled(serialNumber) &&
+    isValueFilled(model) &&
+    isValueFilled(orderType) &&
+    isValueFilled(invoice) &&
+    isValueFilled(entryTechnician)
+  );
+};
+
+const isAssistanceFilled = (state: ReportState): boolean => {
+  const { defect_part, defect_cause, defect_solution, assistanceTechnician, customFields } = state;
+  const areCustomFieldsFilled = customFields.every(field => isValueFilled(field.value));
+  return (
+    isValueFilled(defect_part) &&
+    isValueFilled(defect_cause) &&
+    isValueFilled(defect_solution) &&
+    isValueFilled(assistanceTechnician) &&
+    areCustomFieldsFilled
+  );
+};
+
+const isQualityFilled = (state: ReportState): boolean => {
+  const { qualityTechnician, qualityObservations } = state;
+  return isValueFilled(qualityTechnician) && isValueFilled(qualityObservations);
+};
+
 // --- HELPERS ---
 const entryFields: (keyof ReportData)[] = ['op', 'openDate', 'serialNumber', 'model', 'orderType', 'invoice', 'entryTechnician', 'returnItems'];
 const assistanceFields: (keyof ReportData)[] = ['cleanCheck_equipmentCleaning', 'cleanCheck_screws', 'cleanCheck_hotGlue', 'cleanCheck_measurementCables', 'defect_part', 'defect_cause', 'defect_solution', 'defect_observations', 'assistanceTechnician', 'workingCheck_powerOn', 'workingCheck_buttonsLeds', 'workingCheck_predefinedTests', 'workingCheck_screen', 'workingCheck_caseMembranes'];
 const qualityFields: (keyof ReportData)[] = ['finalCheck_case', 'finalCheck_membrane', 'finalCheck_buttons', 'finalCheck_screen', 'finalCheck_test', 'finalCheck_saveReports', 'finalCheck_calibrationPrint', 'finalCheck_backup', 'qualityTechnician', 'qualityObservations'];
 
 // --- STATE AND ACTIONS INTERFACES ---
-// The state is now flat, containing all fields from ReportData directly
 export type ReportState = ReportData & {
   loading: boolean;
   isGeneratingPdf: boolean;
@@ -18,6 +55,9 @@ export type ReportState = ReportData & {
   entryImages: AttachedImage[];
   assistanceImages: AttachedImage[];
   qualityImages: AttachedImage[];
+  isEntryComplete: boolean;
+  isAssistanceComplete: boolean;
+  isQualityComplete: boolean;
 };
 
 export interface ReportActions {
@@ -30,7 +70,7 @@ export interface ReportActions {
   removeAttachedImage: (imageId: number) => Promise<void>;
   setIsGeneratingPdf: (isGenerating: boolean) => void;
   resetReportState: () => void;
-  _saveReport: () => Promise<void>; // Internal save function
+  _saveReport: () => Promise<void>;
 }
 
 export type ReportSlice = ReportState & ReportActions;
@@ -44,7 +84,9 @@ const initialState: ReportState = {
   entryImages: [],
   assistanceImages: [],
   qualityImages: [],
-  // All fields from ReportData are initialized here
+  isEntryComplete: false,
+  isAssistanceComplete: false,
+  isQualityComplete: false,
   op: '', openDate: '', serialNumber: '', model: null, orderType: null, invoice: '', entryTechnician: '', returnItems: [],
   cleanCheck_equipmentCleaning: false, cleanCheck_screws: false, cleanCheck_hotGlue: false, cleanCheck_measurementCables: false, defect_part: '', defect_cause: '', defect_solution: '', defect_observations: '', assistanceTechnician: '', workingCheck_powerOn: false, workingCheck_buttonsLeds: false, workingCheck_predefinedTests: false, workingCheck_screen: false, workingCheck_caseMembranes: false,
   finalCheck_case: false, finalCheck_membrane: false, finalCheck_buttons: false, finalCheck_screen: false, finalCheck_test: false, finalCheck_saveReports: false, finalCheck_calibrationPrint: false, finalCheck_backup: false, qualityTechnician: '', qualityObservations: '',
@@ -52,7 +94,6 @@ const initialState: ReportState = {
 
 // --- DEBOUNCED SAVE FUNCTION ---
 const debouncedSave = debounce((saveFn: () => void) => {
-  console.log("Debounced save triggered");
   saveFn();
 }, 1500);
 
@@ -68,29 +109,23 @@ export const createReportSlice: StateCreator<
   _saveReport: async () => {
     const { db, currentSessionId, customFields, ...reportData } = get();
     if (!db || !currentSessionId) return;
-
-    console.log('Saving report for session:', currentSessionId);
     try {
       const runUpdate = async (tableName: string, fields: (keyof ReportData)[]) => {
         const dataToSave = fields.reduce((acc, key) => ({ ...acc, [key]: reportData[key] }), {} as ReportData);
         const filteredKeys = Object.keys(dataToSave);
         if (filteredKeys.length === 0) return;
-
         const updateSet = filteredKeys.map(key => `${key} = ?`).join(', ');
         const values = filteredKeys.map(key => {
             if (key === 'returnItems') return JSON.stringify(dataToSave[key as keyof ReportData] || []);
             return dataToSave[key as keyof ReportData];
         });
-
         if (values.length > 0) {
             await db.runAsync(`UPDATE ${tableName} SET ${updateSet} WHERE session_id = ?`, [...values, currentSessionId]);
         }
       };
-
       await runUpdate('entry_data', entryFields);
       await runUpdate('assistance_data', assistanceFields);
       await runUpdate('quality_data', qualityFields);
-
       await db.runAsync(`DELETE FROM custom_report_fields WHERE session_id = ?`, currentSessionId);
       for (const field of customFields) {
         await db.runAsync(
@@ -98,8 +133,6 @@ export const createReportSlice: StateCreator<
           field.id, currentSessionId, field.title, field.value
         );
       }
-
-      console.log('Report data saved successfully.');
     } catch (error) {
       console.error("Failed to save report data:", error);
     }
@@ -110,7 +143,6 @@ export const createReportSlice: StateCreator<
     try {
       const db = get().db;
       if (!db) throw new Error("Database not ready");
-
       const query = `
         SELECT
           ed.op, ed.openDate, ed.serialNumber, ed.model, ed.orderType, ed.invoice, ed.entryTechnician, ed.returnItems,
@@ -124,12 +156,9 @@ export const createReportSlice: StateCreator<
         LEFT JOIN quality_data qd ON ed.session_id = qd.session_id
         WHERE ed.session_id = ?;
       `;
-      
       const rawReportDetails = await db.getFirstAsync<any>(query, sessionId);
-
       const customFieldsData = await db.getAllAsync<CustomField>(`SELECT * FROM custom_report_fields WHERE session_id = ?`, sessionId);
       const imagesData = await db.getAllAsync<AttachedImage>(`SELECT * FROM attached_images WHERE session_id = ?`, sessionId);
-
       const loadedReportData: ReportData = {
         op: rawReportDetails?.op || '',
         openDate: rawReportDetails?.openDate || '',
@@ -139,7 +168,6 @@ export const createReportSlice: StateCreator<
         invoice: rawReportDetails?.invoice || '',
         entryTechnician: rawReportDetails?.entryTechnician || '',
         returnItems: JSON.parse(rawReportDetails?.returnItems || '[]'),
-
         cleanCheck_equipmentCleaning: !!rawReportDetails?.cleanCheck_equipmentCleaning,
         cleanCheck_screws: !!rawReportDetails?.cleanCheck_screws,
         cleanCheck_hotGlue: !!rawReportDetails?.cleanCheck_hotGlue,
@@ -154,7 +182,6 @@ export const createReportSlice: StateCreator<
         workingCheck_predefinedTests: !!rawReportDetails?.workingCheck_predefinedTests,
         workingCheck_screen: !!rawReportDetails?.workingCheck_screen,
         workingCheck_caseMembranes: !!rawReportDetails?.workingCheck_caseMembranes,
-
         finalCheck_case: !!rawReportDetails?.finalCheck_case,
         finalCheck_membrane: !!rawReportDetails?.finalCheck_membrane,
         finalCheck_buttons: !!rawReportDetails?.finalCheck_buttons,
@@ -166,16 +193,22 @@ export const createReportSlice: StateCreator<
         qualityTechnician: rawReportDetails?.qualityTechnician || '',
         qualityObservations: rawReportDetails?.qualityObservations || '',
       };
-
-      set({ 
+      const finalState = { 
         ...initialState, 
-        ...loadedReportData, // Overwrite with loaded data
+        ...loadedReportData,
         currentSessionId: sessionId,
         customFields: customFieldsData || [],
         entryImages: imagesData.filter(img => img.stage === 'entry') || [],
         assistanceImages: imagesData.filter(img => img.stage === 'assistance') || [],
         qualityImages: imagesData.filter(img => img.stage === 'quality') || [],
         loading: false,
+        isEntryComplete: false, isAssistanceComplete: false, isQualityComplete: false
+      };
+      set(finalState);
+      set({
+        isEntryComplete: isEntryFilled(finalState),
+        isAssistanceComplete: isAssistanceFilled(finalState),
+        isQualityComplete: isQualityFilled(finalState),
       });
     } catch (error) {
       console.error("Failed to load report data:", error);
@@ -184,23 +217,49 @@ export const createReportSlice: StateCreator<
   },
 
   updateReportField: (field, value) => {
-    set({ [field]: value } as unknown as Partial<ReportState>);
+    set(state => {
+      const newState = { ...state, [field]: value };
+      return {
+        ...newState,
+        isEntryComplete: isEntryFilled(newState),
+        isAssistanceComplete: isAssistanceFilled(newState),
+        isQualityComplete: isQualityFilled(newState),
+      };
+    });
     debouncedSave(() => get()._saveReport());
   },
 
   addCustomField: (title) => {
-    const newField: CustomField = { id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`, title, value: '' };
-    set(state => ({ customFields: [...state.customFields, newField] }));
+    set(state => {
+      const newField: CustomField = { id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`, title, value: '' };
+      const newState = { ...state, customFields: [...state.customFields, newField] };
+      return {
+        ...newState,
+        isAssistanceComplete: isAssistanceFilled(newState),
+      };
+    });
     debouncedSave(() => get()._saveReport());
   },
 
   updateCustomFieldValue: (id, value) => {
-    set(state => ({ customFields: state.customFields.map(f => f.id === id ? { ...f, value } : f) }));
+    set(state => {
+      const newState = { ...state, customFields: state.customFields.map(f => f.id === id ? { ...f, value } : f) };
+      return {
+        ...newState,
+        isAssistanceComplete: isAssistanceFilled(newState),
+      };
+    });
     debouncedSave(() => get()._saveReport());
   },
 
   removeCustomField: (id) => {
-    set(state => ({ customFields: state.customFields.filter(f => f.id !== id) }));
+    set(state => {
+      const newState = { ...state, customFields: state.customFields.filter(f => f.id !== id) };
+      return {
+        ...newState,
+        isAssistanceComplete: isAssistanceFilled(newState),
+      };
+    });
     debouncedSave(() => get()._saveReport());
   },
 
@@ -208,7 +267,7 @@ export const createReportSlice: StateCreator<
     const { db, currentSessionId } = get();
     if (!db || !currentSessionId) return;
     try {
-        const result = await db.runAsync(`INSERT INTO attached_images (session_id, stage, uri, description) VALUES (?, ?, ?, ?)`, currentSessionId, image.stage, image.uri, image.description);
+        const result = await db.runAsync(`INSERT INTO attached_images (session_id, stage, uri, description) VALUES (?, ?, ?, ?)`, currentSessionId, image.stage, image.uri);
         const newImageId = result.lastInsertRowId;
         if (newImageId) {
             const newImage = { ...image, id: newImageId };
@@ -240,5 +299,5 @@ export const createReportSlice: StateCreator<
 
   setIsGeneratingPdf: (isGenerating) => set({ isGeneratingPdf: isGenerating }),
 
-  resetReportState: () => set({ ...initialState, currentSessionId: null }),
+  resetReportState: () => set({ ...initialState }),
 });

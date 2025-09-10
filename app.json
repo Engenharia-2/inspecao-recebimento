@@ -4,38 +4,43 @@
     "slug": "Inspecao-Recebimento",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logoLaranjaLHF.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/logoLaranjaLHF.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-          "NSCameraUsageDescription": "Este aplicativo precisa de acesso à sua câmera para tirar fotos de inspeções.",
-          "NSPhotoLibraryUsageDescription": "Este aplicativo precisa de acesso à sua biblioteca de fotos para selecionar imagens para inspeções."
-        }
+        "NSCameraUsageDescription": "Este aplicativo precisa de acesso à sua câmera para tirar fotos de inspeções.",
+        "NSPhotoLibraryUsageDescription": "Este aplicativo precisa de acesso à sua biblioteca de fotos para selecionar imagens para inspeções."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logoLaranjaLHF.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-          "CAMERA",
-          "READ_EXTERNAL_STORAGE",
-          "WRITE_EXTERNAL_STORAGE",
-          "READ_MEDIA_IMAGES",
-          "READ_MEDIA_VIDEO"
-        ],
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO"
+      ],
       "edgeToEdgeEnabled": true,
       "package": "com.felipeut_engenharia.InspecaoRecebimento"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logoLaranjaLHF.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9bf79cb5-b53d-4a9a-be7e-f0127cab7cbf"
+      }
     }
   }
 }

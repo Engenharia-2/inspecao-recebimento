@@ -26,20 +26,23 @@ export default function App() {
   useDatabaseInitializer();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, marginTop: 40 }}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Início' }} />
-          <Stack.Screen name="Select" component={SelectScreen} options={{ title: 'Nova Entrada' }} />
-          <Stack.Screen name="Entry" component={EntryScreen} options={{ title: 'Entrada' }} />
-          <Stack.Screen name="Assistance" component={AssistanceScreen} options={{ title: 'Assistência' }} />
-          <Stack.Screen name="Quality" component={QualityScreen} options={{ title: 'Qualidade' }} />
+        <Stack.Navigator 
+          initialRouteName="Home"
+          screenOptions={{ headerShown: false }} // Hide header for all screens
+        >
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Select" component={SelectScreen} />
+          <Stack.Screen name="Entry" component={EntryScreen} />
+          <Stack.Screen name="Assistance" component={AssistanceScreen} />
+          <Stack.Screen name="Quality" component={QualityScreen} />
           <Stack.Screen 
             name="CameraScreen" 
             component={CameraScreen} 
             options={{
-              headerShown: false,
-              presentation: 'modal', // Present as a modal
+              // headerShown is already false from screenOptions, but we keep presentation style
+              presentation: 'modal', 
             }}
           />
         </Stack.Navigator>

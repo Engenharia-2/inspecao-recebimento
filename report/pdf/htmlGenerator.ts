@@ -1,7 +1,7 @@
 
 import { ReportData, AttachedImage, CustomField } from '../types';
 
-const generateCheckbox = (label: string, checked: boolean | undefined) => {
+const generateCheckbox = (label: string, checked: boolean | undefined) => { 
     return `
         <div class="checkbox-container">
             <span class="checkbox ${checked ? 'checked' : ''}"></span>
@@ -60,13 +60,77 @@ export const createPdfContent = (data: {
             .report-image { max-width: 90%; height: auto; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 5px; }
             .image-description { font-size: 14px; color: #666; font-style: italic; }
             .image-group-section { border: 1px solid #eee; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+            @page {
+                margin-top: 3cm;
+                margin-left: 0cm;
+                margin-right: 0cm;
+                margin-bottom: 1cm;
+
+                @top-left {
+                    content: "";
+                    background-image: url();
+                    background-color: N; 
+                    padding: 1.2cm;
+                    padding-top: 0.4cm;
+                    width: 1.0cm;
+                    height: 0.9cm;
+                    vertical-align: middle;
+                    background-size: 2cm;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    margin-bottom: 0.5cm;
+                }
+                @top-center {
+                    content: "Relatório de Inspeção de Recebimento";
+                    font-weight: bold;
+                    font-size: 1cm;
+                    color: #fff;
+                    text-align: center;
+                    white-space: nowrap;
+                    background-color: '#0f398c'; 
+                    padding: 0.2cm 0;
+                    width: 14.75cm;
+                    margin-bottom: 0.5cm;
+
+                }
+                @top-right {
+                    content: "";
+                    background-color: '#0f398c';
+                    width: 3.39cm;
+                    margin-bottom: 0.5cm;
+
+                }
+                @bottom-left {
+                    content: "";
+                    background-color: '#0f398c';
+                    height: 1cm;
+                }
+                @bottom-center {
+                    height: 1cm;
+                    content: "Copyright ©2024. Todos direitos reservados à \\A LHF Sistemas de Teste e Medição";
+                    font-size: 8pt;
+                    color: #fff;
+                    background-color: '#0f398c'; /* ALTERADO */
+                    text-align: center;
+                    width: 70%;
+                }
+                @bottom-right {
+                    content: " " counter(page) "/" counter(pages);
+                    background-color: '#0f398c'; /* ALTERADO */
+                    width: 3.19cm;
+                    height: 1cm;
+                    color: #fff;
+                    text-align: center;
+                    font-size: 10pt;
+                }
+            }
         </style>
     </head>
     <body>
-        <div class="header">
-            <h1>Relatório de Inspeção de Recebimento</h1>
-            <p><strong>Data do Relatório:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
-        </div>
+        // <div class="header">
+        //     <h1>Relatório de Inspeção de Recebimento</h1>
+        //     <p><strong>Data do Relatório:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+        // </div>
 
         <!-- Seção de Entrada -->
         <div class="section">
@@ -83,6 +147,8 @@ export const createPdfContent = (data: {
             ${generateCheckbox('Manual', reportData.returnItems?.includes('Manual'))}
             ${generateCheckbox('Bolsa de Cabos', reportData.returnItems?.includes('Bolsa de Cabos'))}
             ${generateCheckbox('Cabo de medição', reportData.returnItems?.includes('Cabo de medição'))}
+            <h2 class="section-title">Imagens da entrada</h2>
+            ${generateImageSection('Imagens da Entrada', entryImages)}
         </div>
 
         <!-- Seção de Assistência -->
@@ -122,6 +188,8 @@ export const createPdfContent = (data: {
             ${generateCheckbox('Fazer backup do equipamento', reportData.finalCheck_backup)}
             <h4>Observações Finais:</h4>
             <p>${reportData.qualityObservations || 'Nenhuma observação.'}</p>
+            <h2 class="section-title">Imagens da qualidade</h2>
+            ${generateImageSection('Imagens da Qualidade', qualityImages)}
         </div>
 
         <!-- Seção de Plano de Ação -->
@@ -134,9 +202,7 @@ export const createPdfContent = (data: {
 
         <!-- Seção de Imagens -->
         <div class="section image-section">
-            <h2 class="section-title">5. Imagens Anexadas</h2>
-            ${generateImageSection('Imagens da Entrada', entryImages)}
-            ${generateImageSection('Imagens da Assistência', assistanceImages)}
+            <h2 class="section-title">5. Imagens da Finalização N</h2>
             ${generateImageSection('Imagens da Qualidade', qualityImages)}
         </div>
 

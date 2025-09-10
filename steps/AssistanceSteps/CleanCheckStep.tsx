@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomCheckbox from '../../components/CustomCheckbox';
 import { useAppStore } from '../../store';
+import { Colors }from '../../assets/Colors';
 
 const CleanCheckStep = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: Colors.primaryOrange,
   },
 });
 

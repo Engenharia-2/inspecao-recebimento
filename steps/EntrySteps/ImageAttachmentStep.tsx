@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
@@ -7,6 +6,7 @@ import { useAppPermissions } from '../../hooks/useAppPermissions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
+import CustomButton from '../../components/CustomButton'; // Import CustomButton
 
 type EntryRouteProp = RouteProp<{ Entry: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Entry'>;
 
@@ -51,6 +51,12 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
           onTakePicture={() => takePicture(2)}
           onDeleteImage={deleteImage}
         />
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            title="Fechar formulário"
+            onPress={() => navigation.navigate('Select')}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -62,8 +68,12 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    flex: 1, // Make content take up space
+    justifyContent: 'space-between', // Push button to bottom
   },
+  buttonContainer: {
+    paddingBottom: 20, // Add some padding at the bottom
+  }
 });
 
 export default ImageAttachmentStep;
-

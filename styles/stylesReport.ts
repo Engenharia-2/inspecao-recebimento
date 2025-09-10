@@ -135,7 +135,7 @@ export const stylesReport = StyleSheet.create({
     padding: 8,
   },
   imageDescriptionText: {
-    color: Colors.primaryBlue,
+    color: Colors.primaryOrange,
     fontSize: 12,
     marginTop: 5,
     textAlign: 'center',
@@ -274,7 +274,7 @@ export const stylesReport = StyleSheet.create({
     alignItems: 'center',
   },
   reportButton: {
-    backgroundColor: Colors.primaryBlue,
+    backgroundColor: Colors.primaryOrange,
     borderRadius: 30,
     paddingHorizontal: 10,
     height: 40,

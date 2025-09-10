@@ -1,6 +1,7 @@
 // assets/Colors.ts
 export const Colors = {
   primary: '#007bff',
+  primaryOrange: '#f24607',
   primaryBlue: '#0f398c',
   secondaryBlue: '#076df2',
   white: '#ffffff',
@@ -11,7 +12,7 @@ export const Colors = {
   lightBorder: '#ddd',
   lightSeparator: '#f0f0f0',
   red: '#ff4d4d',
-  green: '#28a745',
+  green: '#21ce49ff',
   black: '#000',
   background: '#f7f7f7',
 

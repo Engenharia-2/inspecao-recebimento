@@ -6,6 +6,7 @@ import { AppStore } from '../index';
 export interface SessionState {
   measurementSessions: InspectionSession[];
   currentSession: InspectionSession | null;
+  isSessionsLoading: boolean;
 }
 
 export interface SessionActions {
@@ -26,31 +27,43 @@ export const createSessionSlice: StateCreator<
 > = (set, get) => ({
   measurementSessions: [],
   currentSession: null,
+  isSessionsLoading: false,
   loadAllSessions: async () => {
+    if (get().isSessionsLoading) return; // Prevent concurrent reloads
     const db = get().db;
     if (!db) return;
+    set({ isSessionsLoading: true });
     try {
+      // Modificado para buscar 'op' da tabela 'entry_data'
       const sessions = await db.getAllAsync<InspectionSession>(
-        `SELECT id, name, start_time as startTime, end_time as endTime FROM inspection_sessions ORDER BY start_time DESC`
+        `SELECT 
+          s.id, 
+          ed.op as name, -- Usa 'op' como 'name' para compatibilidade
+          s.start_time as startTime, 
+          s.end_time as endTime 
+         FROM inspection_sessions s
+         LEFT JOIN entry_data ed ON s.id = ed.session_id
+         ORDER BY s.start_time DESC`
       );
       set({ measurementSessions: sessions });
     } catch (err) {
       console.error("Failed to load sessions:", err);
+    } finally {
+      set({ isSessionsLoading: false });
     }
   },
   startNewSession: async () => {
     const db = get().db;
     if (!db) return null;
     try {
-      const sessionName = `Inspecao ${new Date().toLocaleString('pt-BR')}`;
       const now = new Date().toISOString();
+      // Removido 'name' e 'sessionName'
       const result = await db.runAsync(
-        `INSERT INTO inspection_sessions (name, start_time, end_time) VALUES (?, ?, ?)`,
-        sessionName, now, null
+        `INSERT INTO inspection_sessions (start_time, end_time) VALUES (?, ?)`,
+        now, null
       );
       const newSessionId = result.lastInsertRowId;
       if (newSessionId) {
-        // Cria entradas vazias para a nova sessão nas tabelas de dados
         await db.runAsync(`INSERT INTO entry_data (session_id) VALUES (?)`, newSessionId);
         await db.runAsync(`INSERT INTO assistance_data (session_id) VALUES (?)`, newSessionId);
         await db.runAsync(`INSERT INTO quality_data (session_id) VALUES (?)`, newSessionId);
@@ -69,13 +82,20 @@ export const createSessionSlice: StateCreator<
     const db = get().db;
     if (!db) return;
     try {
+      // Modificado para buscar 'op' da tabela 'entry_data'
       const session = await db.getFirstAsync<InspectionSession>(
-        `SELECT id, name, start_time as startTime, end_time as endTime FROM inspection_sessions WHERE id = ?`,
+        `SELECT 
+          s.id, 
+          ed.op as name, -- Usa 'op' como 'name'
+          s.start_time as startTime, 
+          s.end_time as endTime 
+         FROM inspection_sessions s
+         LEFT JOIN entry_data ed ON s.id = ed.session_id
+         WHERE s.id = ?`,
         sessionId
       );
       if (session) {
         set({ currentSession: session });
-        // Carrega os dados do relatório associados a esta sessão
         get().loadReportForSession(session.id);
       }
     } catch (err) {

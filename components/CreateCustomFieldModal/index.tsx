@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import CustomButton from '../components/CustomButton';
-import { stylesUI } from '../styles/stylesUI';
-import { stylesReport } from '../styles/stylesReport';
+import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import CustomButton from '../CustomButton';
+import { styles } from './style';
 
 interface CreateCustomFieldModalProps {
   isVisible: boolean;
@@ -32,19 +31,19 @@ const CreateCustomFieldModal: React.FC<CreateCustomFieldModalProps> = ({
       transparent={true}
       onRequestClose={onClose}
     >
-      <View style={stylesReport.centeredView}>
-        <View style={stylesReport.modalView}>
-          <Text style={stylesUI.headerText}>Adicionar Novo Campo</Text>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.headerText}>Adicionar Novo Campo</Text>
           <TextInput
-            style={stylesUI.input}
+            style={styles.input}
             placeholder="Título do Campo"
             value={fieldTitle}
             onChangeText={setFieldTitle}
           />
-          <View style={stylesReport.buttonContainer}>
+          <View style={styles.buttonContainer}>
             <CustomButton title="Confirmar" onPress={handleConfirm} />
-            <TouchableOpacity onPress={onClose} style={[stylesUI.button, stylesReport.cancelButton]}>
-              <Text style={stylesUI.buttonText}>Cancelar</Text>
+            <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancelButton]}>
+              <Text style={styles.buttonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>

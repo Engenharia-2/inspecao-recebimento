@@ -16,12 +16,9 @@ export const useAppStore = create<AppStore>()((...a) => ({
 
 // Hook para inicializar o banco de dados e carregar dados iniciais
 export const useDatabaseInitializer = () => {
-  const { initDb, loadAllSessions } = useAppStore();
+  const { initDb } = useAppStore();
 
   React.useEffect(() => {
-    initDb(() => {
-      // Funções para carregar dados após a inicialização do DB
-      loadAllSessions();
-    });
-  }, [initDb, loadAllSessions]);
+    initDb();
+  }, [initDb]);
 };

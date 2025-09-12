@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Text, TextInput, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
 import { useImageManager } from '../../hooks/useImageManager';
-import { stylesUI } from '../../styles/stylesUI';
 import { useAppStore } from '../../store';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import CustomButton from '../../components/CustomButton'; // Import CustomButton
+import CustomButton from '../../components/CustomButton';
+import CustomInput from '../../components/CustomInput';
+import { Colors } from '../../assets/Colors';
 
 type AssistanceRouteProp = RouteProp<{ Assistance: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Assistance'>;
 
@@ -39,15 +40,12 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
     <View style={styles.container}>
         <View>
             <Text style={styles.title}>Verificação de Imagens e Técnico</Text>
-
-            <Text style={stylesUI.labelText}>Técnico que realizou os testes:</Text>
-            <TextInput
-                style={stylesUI.input}
+            <CustomInput
+                label="Técnico que realizou os testes:"
                 placeholder="Nome do Técnico"
                 value={assistanceTechnician || ''}
                 onChangeText={(text) => updateReportField('assistanceTechnician', text)}
             />
-
             <ImageAttachment
                 attachedImages={assistanceImages}
                 onPickImage={pickImage}
@@ -71,14 +69,15 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'space-between', // Push button to bottom
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
   buttonContainer: {
     paddingBottom: 20, // Add some padding at the bottom
-  }
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: Colors.textLight,
+  },
 });
 
 export default ImagesCheckUp;

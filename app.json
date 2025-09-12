@@ -4,11 +4,11 @@
     "slug": "Inspecao-Recebimento",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logoLaranjaLHF.png",
+    "icon": "./assets/images/logoLaranjaLHF.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logoLaranjaLHF.png",
+      "image": "./assets/images/logoLaranjaLHF.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logoLaranjaLHF.png",
+        "foregroundImage": "./assets/images/logoLaranjaLHF.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -35,7 +35,7 @@
       "package": "com.felipeut_engenharia.InspecaoRecebimento"
     },
     "web": {
-      "favicon": "./assets/logoLaranjaLHF.png"
+      "favicon": "./assets/images/logoLaranjaLHF.png"
     },
     "extra": {
       "eas": {

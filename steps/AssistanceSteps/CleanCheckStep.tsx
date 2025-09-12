@@ -14,26 +14,28 @@ const CleanCheckStep = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Limpeza e checagem interna</Text>
-      <CustomCheckbox
-        label="Limpeza do equipamento"
-        value={!!cleanCheck_equipmentCleaning}
-        onValueChange={() => updateReportField('cleanCheck_equipmentCleaning', !cleanCheck_equipmentCleaning)}
-      />
-      <CustomCheckbox
-        label="Parafusos"
-        value={!!cleanCheck_screws}
-        onValueChange={() => updateReportField('cleanCheck_screws', !cleanCheck_screws)}
-      />
-      <CustomCheckbox
-        label="Cola quente"
-        value={!!cleanCheck_hotGlue}
-        onValueChange={() => updateReportField('cleanCheck_hotGlue', !cleanCheck_hotGlue)}
-      />
-      <CustomCheckbox
-        label="Limpar os cabos de medição"
-        value={!!cleanCheck_measurementCables}
-        onValueChange={() => updateReportField('cleanCheck_measurementCables', !cleanCheck_measurementCables)}
-      />
+      <View style={styles.containerBox}>
+        <CustomCheckbox
+          label="Limpeza do equipamento"
+          value={!!cleanCheck_equipmentCleaning}
+          onValueChange={() => updateReportField('cleanCheck_equipmentCleaning', !cleanCheck_equipmentCleaning)}
+        />
+        <CustomCheckbox
+          label="Parafusos"
+          value={!!cleanCheck_screws}
+          onValueChange={() => updateReportField('cleanCheck_screws', !cleanCheck_screws)}
+        />
+        <CustomCheckbox
+          label="Cola quente"
+          value={!!cleanCheck_hotGlue}
+          onValueChange={() => updateReportField('cleanCheck_hotGlue', !cleanCheck_hotGlue)}
+        />
+        <CustomCheckbox
+          label="Limpar os cabos de medição"
+          value={!!cleanCheck_measurementCables}
+          onValueChange={() => updateReportField('cleanCheck_measurementCables', !cleanCheck_measurementCables)}
+        />
+      </View>
     </View>
   );
 };
@@ -48,6 +50,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     color: Colors.primaryOrange,
+  },
+  containerBox:{
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    backgroundColor: Colors.white,
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.lightBorder,
+    elevation: 4,
   },
 });
 

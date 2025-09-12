@@ -15,7 +15,6 @@ export const initializeDatabase = async (): Promise<SQLiteDatabase> => {
     -- Tabela principal para as sessões de inspeção
     CREATE TABLE IF NOT EXISTS inspection_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
       start_time TEXT NOT NULL,
       end_time TEXT
     );

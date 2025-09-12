@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomCheckbox from '../../components/CustomCheckbox';
 import { useAppStore } from '../../store';
+import { Colors } from '../../assets/Colors';
 
 const FinalCheckStep = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -17,46 +18,48 @@ const FinalCheckStep = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Finalização</Text>
-      <CustomCheckbox
-        label="Maleta"
-        value={!!finalCheck_case}
-        onValueChange={() => updateReportField('finalCheck_case', !finalCheck_case)}
-      />
-      <CustomCheckbox
-        label="Membrana"
-        value={!!finalCheck_membrane}
-        onValueChange={() => updateReportField('finalCheck_membrane', !finalCheck_membrane)}
-      />
-      <CustomCheckbox
-        label="Botões"
-        value={!!finalCheck_buttons}
-        onValueChange={() => updateReportField('finalCheck_buttons', !finalCheck_buttons)}
-      />
-      <CustomCheckbox
-        label="Tela"
-        value={!!finalCheck_screen}
-        onValueChange={() => updateReportField('finalCheck_screen', !finalCheck_screen)}
-      />
-      <CustomCheckbox
-        label="Teste"
-        value={!!finalCheck_test}
-        onValueChange={() => updateReportField('finalCheck_test', !finalCheck_test)}
-      />
-      <CustomCheckbox
-        label="Salvar Relatórios"
-        value={!!finalCheck_saveReports}
-        onValueChange={() => updateReportField('finalCheck_saveReports', !finalCheck_saveReports)}
-      />
-      <CustomCheckbox
-        label="Print da calibração"
-        value={!!finalCheck_calibrationPrint}
-        onValueChange={() => updateReportField('finalCheck_calibrationPrint', !finalCheck_calibrationPrint)}
-      />
-      <CustomCheckbox
-        label="Fazer backup do equipamento"
-        value={!!finalCheck_backup}
-        onValueChange={() => updateReportField('finalCheck_backup', !finalCheck_backup)}
-      />
+      <View style={styles.containerBox}>
+        <CustomCheckbox
+          label="Maleta"
+          value={!!finalCheck_case}
+          onValueChange={() => updateReportField('finalCheck_case', !finalCheck_case)}
+        />
+        <CustomCheckbox
+          label="Membrana"
+          value={!!finalCheck_membrane}
+          onValueChange={() => updateReportField('finalCheck_membrane', !finalCheck_membrane)}
+        />
+        <CustomCheckbox
+          label="Botões"
+          value={!!finalCheck_buttons}
+          onValueChange={() => updateReportField('finalCheck_buttons', !finalCheck_buttons)}
+        />
+        <CustomCheckbox
+          label="Tela"
+          value={!!finalCheck_screen}
+          onValueChange={() => updateReportField('finalCheck_screen', !finalCheck_screen)}
+        />
+        <CustomCheckbox
+          label="Teste"
+          value={!!finalCheck_test}
+          onValueChange={() => updateReportField('finalCheck_test', !finalCheck_test)}
+        />
+        <CustomCheckbox
+          label="Salvar Relatórios"
+          value={!!finalCheck_saveReports}
+          onValueChange={() => updateReportField('finalCheck_saveReports', !finalCheck_saveReports)}
+        />
+        <CustomCheckbox
+          label="Print da calibração"
+          value={!!finalCheck_calibrationPrint}
+          onValueChange={() => updateReportField('finalCheck_calibrationPrint', !finalCheck_calibrationPrint)}
+        />
+        <CustomCheckbox
+          label="Fazer backup do equipamento"
+          value={!!finalCheck_backup}
+          onValueChange={() => updateReportField('finalCheck_backup', !finalCheck_backup)}
+        />
+      </View>
     </View>
   );
 };
@@ -70,6 +73,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  containerBox:{
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    backgroundColor: Colors.white,
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.lightBorder,
+    elevation: 4,
   },
 });
 

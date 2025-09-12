@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { stylesUI } from '../../styles/stylesUI';
+import { View, Text, StyleSheet } from 'react-native';
 import { useAppStore } from '../../store';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../assets/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomInput from '../../components/CustomInput';
 
 const FinalObservationStep: React.FC = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -17,18 +17,15 @@ const FinalObservationStep: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.title}>Observações Finais</Text>
-
-        <Text style={stylesUI.labelText}>Técnico Responsável:</Text>
-        <TextInput
-          style={stylesUI.input}
+        <CustomInput
+          label="Técnico Responsável:"
           placeholder="Nome do Técnico"
           value={qualityTechnician || ''}
           onChangeText={(text) => updateReportField('qualityTechnician', text)}
         />
-
-        <Text style={stylesUI.labelText}>Observações Finais:</Text>
-        <TextInput
-          style={[stylesUI.input, { height: 100 }]}
+        <CustomInput
+          label="Observações Finais:"
+          style={[styles.input, { height: 100 }]}
           placeholder="Adicione observações finais sobre a inspeção"
           value={qualityObservations || ''}
           onChangeText={(text) => updateReportField('qualityObservations', text)}
@@ -40,8 +37,6 @@ const FinalObservationStep: React.FC = () => {
         <CustomButton
             title="Fechar formulário"
             onPress={() => navigation.navigate('Select')}
-            style={[stylesUI.button, stylesUI.buttonDisabled]}
-            textStyle={{...stylesUI.buttonText, color: Colors.darkGray}}
         />
       </View>
     </SafeAreaView>
@@ -61,6 +56,23 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingBottom: 20,
+  },
+  labelText:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.textLight,
+    marginBottom: 4,
+    marginLeft: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 15,
+    padding: 16,
+    fontSize: 16,
+    backgroundColor: '#fff',
+    elevation: 4, // Sombra para Android
+    marginBottom: 8,
   },
 });
 

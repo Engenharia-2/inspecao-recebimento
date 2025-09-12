@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
   labelText:{
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.primaryOrange,
+    color: Colors.textLight,
     marginBottom: 4,
     marginLeft: 10,
   },

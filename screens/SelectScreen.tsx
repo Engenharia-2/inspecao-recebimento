@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../store';
 import { Colors } from '../assets/Colors';
 import { useReportGenerator } from '../hooks/useReportGenerator'; // Import hook
-import { stylesUI } from '../styles/stylesUI'; // Import shared styles
+
 
 type RootStackParamList = {
   Home: undefined;
@@ -63,7 +63,7 @@ const SelectScreen: React.FC<SelectScreenProps> = ({ navigation }) => {
           title={isGenerating ? 'Gerando Relatório...' : 'Finalizar e Gerar Relatório'}
           onPress={handleGenerateReport}
           disabled={isGenerating || !isAllComplete}
-          style={isGenerating || !isAllComplete ? stylesUI.buttonDisabled : {}}
+          style={isGenerating || !isAllComplete ? styles.buttonDisabled : {}}
         />
         {isGenerating && <ActivityIndicator size="large" color={Colors.primary} style={styles.spinner} />}
         <CustomButton
@@ -106,6 +106,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: 100, // Adjust position
+  },
+  buttonDisabled:{
+    backgroundColor: Colors.lightGray,
   },
 });
 

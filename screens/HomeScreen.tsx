@@ -20,7 +20,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const sessions = useAppStore((state) => state.measurementSessions);
-  const isLoading = useAppStore((state) => state.isDbLoading);
+  const isLoading = useAppStore((state) => state.isSessionsLoading);
   const loadAllSessions = useAppStore((state) => state.loadAllSessions);
   const selectSession = useAppStore((state) => state.selectSession);
   const startNewSession = useAppStore((state) => state.startNewSession);
@@ -69,7 +69,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const renderSessionItem = ({ item }: { item: any }) => (
     <View style={styles.sessionItemContainer}>
       <TouchableOpacity style={styles.sessionItem} onPress={() => handleSessionSelect(item.id)}>
-        <Text style={styles.sessionName}>{item.name}</Text>
+        <Text style={styles.sessionName}>{item.name || 'Inspeção sem OP'}</Text>
         <Text style={styles.sessionDate}>Iniciada em: {new Date(item.startTime).toLocaleString('pt-BR')}</Text>
         {item.endTime && <Text style={styles.sessionDate}>Finalizada em: {new Date(item.endTime).toLocaleString('pt-BR')}</Text>}
       </TouchableOpacity>

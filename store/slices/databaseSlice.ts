@@ -6,13 +6,12 @@ import { AppStore } from '../index';
 
 export interface DatabaseState {
   db: SQLiteDatabase | null;
-  isDbLoading: boolean;
-  isDbReady: boolean;
+  isAppReady: boolean;
   dbError: string | null;
 }
 
 export interface DatabaseActions {
-  initDb: (onDbReady: () => void) => Promise<void>;
+  initDb: () => Promise<void>;
 }
 
 export type DatabaseSlice = DatabaseState & DatabaseActions;
@@ -24,26 +23,28 @@ export const createDatabaseSlice: StateCreator<
   DatabaseSlice
 > = (set, get) => ({
   db: null,
-  isDbLoading: true,
-  isDbReady: false,
+  isAppReady: false,
   dbError: null,
-  initDb: async (onDbReady) => {
-    if (get().isDbReady) {
-        onDbReady();
-        return;
+  initDb: async () => {
+    if (get().isAppReady) {
+      return;
     }
-    set({ isDbLoading: true });
     try {
       const database = await initializeDatabase();
-      set({ db: database, isDbReady: true, dbError: null });
+      set({ db: database, dbError: null });
       console.log("Zustand Store: DB initialized.");
-      onDbReady();
+
+      // Now, load all sessions
+      await get().loadAllSessions();
+      console.log("Zustand Store: All sessions loaded.");
+
+      // Everything is ready
+      set({ isAppReady: true });
+
     } catch (err) {
-      const errorMessage = `Failed to initialize database: ${err instanceof Error ? err.message : String(err)}`;
-      set({ dbError: errorMessage, isDbReady: false });
-      console.error("DB Error: ", errorMessage);
-    } finally {
-      set({ isDbLoading: false });
+      const errorMessage = `Failed to initialize app: ${err instanceof Error ? err.message : String(err)}`;
+      set({ dbError: errorMessage, isAppReady: false });
+      console.error("App Init Error: ", errorMessage);
     }
   },
 });

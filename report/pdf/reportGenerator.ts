@@ -1,4 +1,3 @@
-
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { Alert } from 'react-native';
@@ -6,7 +5,7 @@ import { useAppStore } from '../../store';
 import { AttachedImage, ReportData } from '../types';
 import { createPdfContent } from './htmlGenerator';
 import { convertImageToBase64 } from './imageUtils';
-
+import * as FileSystem from 'expo-file-system'; // Import FileSystem
 
 export const generateReportPdfAndShare = async () => {
   const {
@@ -32,6 +31,8 @@ export const generateReportPdfAndShare = async () => {
       finalCheck_saveReports, finalCheck_calibrationPrint, finalCheck_backup, qualityTechnician, qualityObservations,
     };
 
+    // Removed logo loading logic
+
     // 1. Process all images in parallel
     const processImages = async (images: AttachedImage[]) => {
       const processed = await Promise.all(
@@ -56,6 +57,7 @@ export const generateReportPdfAndShare = async () => {
       entryImages: processedEntry,
       assistanceImages: processedAssistance,
       qualityImages: processedQuality,
+      // Removed logoBase64 parameter
     });
 
     // 3. Print to PDF

@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, Text, View} from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomDropdown from '../../components/CustomDropdown';
 import { useAppStore } from '../../store';
+import { Colors } from '../../assets/Colors'
 
 const IdentificationStep = () => {
   // Granular selectors for performance optimization
@@ -36,6 +37,9 @@ const IdentificationStep = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}> Dados de identificação</Text>
+      </View>
       <CustomInput label="OP" value={op || ''} onChangeText={(text) => updateReportField('op', text)} placeholder="Digite a Ordem de Produção" />
       <CustomInput label="Data de abertura" value={openDate || ''} onChangeText={(text) => updateReportField('openDate', text)} placeholder="DD/MM/AAAA" />
       <CustomInput label="Número de série" value={serialNumber || ''} onChangeText={(text) => updateReportField('serialNumber', text)} placeholder="Digite o número de série" />
@@ -67,6 +71,16 @@ const styles = StyleSheet.create({
     padding: 16,
     zIndex: 0,
   },
+  titleContainer:{
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: Colors.textLight,
+  },
+  
 });
 
 export default IdentificationStep;

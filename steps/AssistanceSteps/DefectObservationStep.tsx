@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
-import { stylesUI } from '../../styles/stylesUI';
+import { Text, StyleSheet, ScrollView } from 'react-native';
 import { useAppStore } from '../../store';
+import { Colors } from '../../assets/Colors';
+import CustomInput from '../../components/CustomInput';
 
 const DefectObservationStep = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -13,34 +14,26 @@ const DefectObservationStep = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Registro de Defeitos e Observações</Text>
-
-      <Text style={stylesUI.labelText}>Peça com defeito:</Text>
-      <TextInput
-        style={stylesUI.input}
+      <CustomInput
+        label="Peça com defeito:"
         placeholder="Descreva a peça com defeito"
         value={defect_part || ''}
         onChangeText={(text) => updateReportField('defect_part', text)}
       />
-
-      <Text style={stylesUI.labelText}>Causa:</Text>
-      <TextInput
-        style={stylesUI.input}
+      <CustomInput
+        label="Causa:"
         placeholder="Descreva a causa do defeito"
         value={defect_cause || ''}
         onChangeText={(text) => updateReportField('defect_cause', text)}
       />
-
-      <Text style={stylesUI.labelText}>Solução:</Text>
-      <TextInput
-        style={stylesUI.input}
+      <CustomInput
+        label="Solução:"
         placeholder="Descreva a solução aplicada"
         value={defect_solution || ''}
         onChangeText={(text) => updateReportField('defect_solution', text)}
       />
-
-      <Text style={stylesUI.labelText}>Observações:</Text>
-      <TextInput
-        style={stylesUI.input}
+      <CustomInput
+        label="Observações:"
         placeholder="Adicione observações adicionais"
         value={defect_observations || ''}
         onChangeText={(text) => updateReportField('defect_observations', text)}
@@ -57,9 +50,10 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: Colors.textLight,
   },
 });
 

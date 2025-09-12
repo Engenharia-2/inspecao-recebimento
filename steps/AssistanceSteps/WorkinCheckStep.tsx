@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomCheckbox from '../../components/CustomCheckbox';
 import { useAppStore } from '../../store';
+import { Colors } from "../../assets/Colors";
 
 const WorkinCheckStep = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -13,32 +14,36 @@ const WorkinCheckStep = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Verificação de Funcionamento</Text>
-      <CustomCheckbox
-        label="Ligar equipamento"
-        value={!!workingCheck_powerOn}
-        onValueChange={() => updateReportField('workingCheck_powerOn', !workingCheck_powerOn)}
-      />
-      <CustomCheckbox
-        label="Testar botões e LEDs"
-        value={!!workingCheck_buttonsLeds}
-        onValueChange={() => updateReportField('workingCheck_buttonsLeds', !workingCheck_buttonsLeds)}
-      />
-      <CustomCheckbox
-        label="Realizar testes predefinidos"
-        value={!!workingCheck_predefinedTests}
-        onValueChange={() => updateReportField('workingCheck_predefinedTests', !workingCheck_predefinedTests)}
-      />
-      <CustomCheckbox
-        label="Verificar tela"
-        value={!!workingCheck_screen}
-        onValueChange={() => updateReportField('workingCheck_screen', !workingCheck_screen)}
-      />
-      <CustomCheckbox
-        label="Verificar maleta e membranas"
-        value={!!workingCheck_caseMembranes}
-        onValueChange={() => updateReportField('workingCheck_caseMembranes', !workingCheck_caseMembranes)}
-      />
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}> Verificação de funcionamento </Text>
+      </View>
+      <View style={styles.containerBox}>
+        <CustomCheckbox
+          label="Ligar equipamento"
+          value={!!workingCheck_powerOn}
+          onValueChange={() => updateReportField('workingCheck_powerOn', !workingCheck_powerOn)}
+        />
+        <CustomCheckbox
+          label="Testar botões e LEDs"
+          value={!!workingCheck_buttonsLeds}
+          onValueChange={() => updateReportField('workingCheck_buttonsLeds', !workingCheck_buttonsLeds)}
+        />
+        <CustomCheckbox
+          label="Realizar testes predefinidos"
+          value={!!workingCheck_predefinedTests}
+          onValueChange={() => updateReportField('workingCheck_predefinedTests', !workingCheck_predefinedTests)}
+        />
+        <CustomCheckbox
+          label="Verificar tela"
+          value={!!workingCheck_screen}
+          onValueChange={() => updateReportField('workingCheck_screen', !workingCheck_screen)}
+        />
+        <CustomCheckbox
+          label="Verificar maleta e membranas"
+          value={!!workingCheck_caseMembranes}
+          onValueChange={() => updateReportField('workingCheck_caseMembranes', !workingCheck_caseMembranes)}
+        />
+      </View>
     </View>
   );
 };
@@ -48,10 +53,25 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  titleContainer:{
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: Colors.textLight,
+  },
+  containerBox:{
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    backgroundColor: Colors.white,
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.lightBorder,
+    elevation: 4,
   },
 });
 

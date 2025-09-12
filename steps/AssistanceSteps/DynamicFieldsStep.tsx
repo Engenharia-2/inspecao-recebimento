@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, TextInput, View, ScrollView } from 'react-native';
+import { SafeAreaView, Text, View, ScrollView, StyleSheet } from 'react-native';
 
 import CreateCustomFieldModal from '../../components/CreateCustomFieldModal';
 import CustomButton from '../../components/CustomButton';
-import { stylesUI } from '../../styles/stylesUI';
+import CustomInput from '../../components/CustomInput';
 import { Colors } from '../../assets/Colors';
 import { stylesReport } from '../../styles/stylesReport';
 import { useAppStore } from '../../store';
@@ -16,25 +16,24 @@ const DynamicFieldsStep: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
-    <SafeAreaView style={stylesUI.screenContainer}>
-        <Text style={stylesUI.headerText}>Plano de Ação</Text>
-        <Text style={stylesUI.labelText}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Plano de Ação</Text>
+        <Text style={styles.label}>
           Indique o plano de ação com o título e descreva a intervenção necessária.
         </Text>
+      </View>
         <CustomButton
           title="Adicionar Novo Campo de Texto"
           onPress={() => setIsModalVisible(true)}
-          style={stylesUI.button}
-          textStyle={stylesUI.buttonText}
         />
         <View style={stylesReport.containerCamp}>
-        <ScrollView style={stylesUI.scrollContent}>
-          <View style={stylesUI.viewPadding}>
+        <ScrollView style={styles.scrollContent}>
+          <View style={styles.viewPadding}>
             {customFields.map((field) => (
-              <View key={field.id} style={stylesUI.inputGroup}>
-                <Text style={stylesUI.labelText}>{field.title}:</Text>
-                <TextInput
-                  style={stylesUI.input}
+              <View key={field.id} style={styles.inputGroup}>
+                <CustomInput
+                  label={`${field.title}:`}
                   value={field.value}
                   onChangeText={(text) => updateCustomFieldValue(field.id, text)}
                   placeholder={`Preencha o valor para ${field.title}`}
@@ -43,7 +42,6 @@ const DynamicFieldsStep: React.FC = () => {
                   title="Remover"
                   onPress={() => removeCustomField(field.id)}
                   style={{ backgroundColor: Colors.red, marginTop: 5, paddingVertical: 8 }}
-                  textStyle={[stylesUI.buttonText, stylesUI.buttonTextRemove]}
                 />
               </View>
             ))}
@@ -61,5 +59,36 @@ const DynamicFieldsStep: React.FC = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    zIndex: 0,
+  },
+  titleContainer:{
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: Colors.textLight,
+  },
+  label:{
+    fontSize: 16,
+  },
+  scrollContent: {
+    paddingVertical: 25,
+    flexGrow: 1,
+  },
+  viewPadding:{
+    paddingHorizontal: 8,
+  },
+  inputGroup: {
+    width: '100%',
+    marginBottom: 8,
+  },
+});
+
 
 export default React.memo(DynamicFieldsStep);

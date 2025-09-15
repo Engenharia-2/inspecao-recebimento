@@ -46,8 +46,6 @@ export const createPdfContent = (data: {
             body {
                 font-family: sans-serif;
                 margin: 0; /* Remove default body margin */
-                padding-top: 3cm;
-                padding-bottom: 2cm; 
                 color: #333;
             }
             .header, .footer {
@@ -70,28 +68,22 @@ export const createPdfContent = (data: {
                 justify-content: center; 
                 padding-left: 20px;
                 padding-right: 20px; 
-                margin-bottom: 6cm;
-            }
-            .footer {
-                bottom: 0;
-                height: 1.5cm;
-                font-size: 8pt;
-                padding-top: 0.5cm;
             }
             .main-content {
                 padding: 0 20px; /* Horizontal padding for content */
             }
-            .section { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px; page-break-inside: avoid; }
+            .section { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 3cm; margin-top: 3cm; page-break-inside: avoid; break-inside: avoid; page-break-after: always;}
             .section-title { font-size: 20px; font-weight: bold; color: #005a9c; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #005a9c; padding-bottom: 5px; }
+            .section-space-images{page-break-inside: avoid; break-inside: avoid; page-break-after: always; margin-top: 3cm;}
             p { margin: 0 0 10px; line-height: 1.4; }
             strong { color: #555; }
             .checkbox-container { display: flex; align-items: center; margin-bottom: 8px; }
             .checkbox { width: 16px; height: 16px; border: 1px solid #999; margin-right: 10px; text-align: center; line-height: 16px; }
             .checkbox.checked::after { content: '✔'; color: #005a9c; }
-            .image-section { margin-top: 20px; }
+            .image-section { margin-top: 1cm;}
             .image-header { font-size: 18px; font-weight: bold; color: #333; margin-top: 20px; margin-bottom: 10px; }
-            .image-block { text-align: center; margin-bottom: 20px; page-break-inside: avoid; }
-            .report-image { max-width: 400px; height: 400px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 5px; }
+            .image-block { text-align: center; margin-bottom: 20px; }
+            .report-image { width: 400px; height: 400px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 5px; }
             .image-description { font-size: 14px; color: #666; font-style: italic; }
             .image-group-section { border: 1px solid #eee; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
             .header-title {
@@ -104,11 +96,6 @@ export const createPdfContent = (data: {
         <div class="header">
             <span class="header-title">Relatório de Inspeção de Recebimento</span>
         </div>
-
-        <div class="footer">
-            Copyright ©${new Date().getFullYear()}. Todos direitos reservados à LHF Sistemas de Teste e Medição
-        </div>
-
         <div class="main-content">
             <!-- Seção de Entrada -->
             <div class="section">
@@ -125,17 +112,14 @@ export const createPdfContent = (data: {
                 ${generateCheckbox('Manual', reportData.returnItems?.includes('Manual'))}
                 ${generateCheckbox('Bolsa de Cabos', reportData.returnItems?.includes('Bolsa de Cabos'))}
                 ${generateCheckbox('Cabo de medição', reportData.returnItems?.includes('Cabo de medição'))}
+            </div>
+            <div class="section-space-images image-section">
                 <h2 class="section-title">Imagens da entrada</h2>
                 ${generateImageSection('Imagens da Entrada', entryImages)}
             </div>
 
             <!-- Seção de Assistência -->
             <div class="section">
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
                 <h2 class="section-title">2. Assistência Técnica</h2>
                 ${generateField('Técnico Responsável', reportData.assistanceTechnician)}
                 <h4>Limpeza e Checagem Interna:</h4>
@@ -155,14 +139,13 @@ export const createPdfContent = (data: {
                 ${generateCheckbox('Verificar tela', reportData.workingCheck_screen)}
                 ${generateCheckbox('Verificar maleta e membranas', reportData.workingCheck_caseMembranes)}
             </div>
+            <div class="image-section section-space-images">
+                <h2 class="section-title">Imagens da Assistência</h2>
+                ${generateImageSection('Imagens da Assistência', qualityImages)}
+            </div>
 
             <!-- Seção de Qualidade -->
             <div class="section">
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
                 <h2 class="section-title">3. Verificação Final da Qualidade</h2>
                 ${generateField('Técnico Responsável', reportData.qualityTechnician)}
                 <h4>Finalização:</h4>
@@ -176,7 +159,9 @@ export const createPdfContent = (data: {
                 ${generateCheckbox('Fazer backup do equipamento', reportData.finalCheck_backup)}
                 <h4>Observações Finais:</h4>
                 <p>${reportData.qualityObservations || 'Nenhuma observação.'}</p>
-                <h2 class="section-title">Imagens da qualidade</h2>
+            </div>
+            <div class="image-section section-space-images">
+                <h2 class="section-title">5. Imagens da Finalização</h2>
                 ${generateImageSection('Imagens da Qualidade', qualityImages)}
             </div>
 
@@ -187,16 +172,10 @@ export const createPdfContent = (data: {
                 ${customFields.map(field => generateField(field.title, field.value)).join('')}
             </div>
             ` : ''}
-
-            <!-- Seção de Imagens -->
-            <div class="section image-section">
-                <h2 class="section-title">5. Imagens da Finalização N</h2>
-                ${generateImageSection('Imagens da Qualidade', qualityImages)}
-            </div>
         </div>
     </body>
     </html>
   `;
-
+ 
   return htmlContent;
 };

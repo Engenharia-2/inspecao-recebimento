@@ -36,8 +36,8 @@ export const generateReportPdfAndShare = async () => {
     const processImages = async (images: AttachedImage[]) => {
       const processed = await Promise.all(
         images.map(async (img) => {
-          const base64 = await convertImageToBase64(img.uri);
-          return base64 ? { ...img, uri: base64 } : null;
+          const result = await convertImageToBase64(img.uri, img.description || '',);
+          return result ? { ...img, uri: result.base64 } : null;
         })
       );
       return processed.filter((img): img is AttachedImage => img !== null);
@@ -56,7 +56,7 @@ export const generateReportPdfAndShare = async () => {
       entryImages: processedEntry,
       assistanceImages: processedAssistance,
       qualityImages: processedQuality,
-    });
+    }); 
 
     // 3. Print to PDF
     const { uri } = await Print.printToFileAsync({ html });

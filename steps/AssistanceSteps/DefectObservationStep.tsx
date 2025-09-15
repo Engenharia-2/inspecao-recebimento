@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { useAppStore } from '../../store';
-import { Colors } from '../../assets/Colors';
 import CustomInput from '../../components/CustomInput';
+import CustomTitle from '../../components/CustomTitle';
+import { useKeyboardAwareScrollView } from '../../hooks/useKeyboardAwareScrollView';
 
 const DefectObservationStep = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -10,10 +11,11 @@ const DefectObservationStep = () => {
   const defect_cause = useAppStore((state) => state.defect_cause);
   const defect_solution = useAppStore((state) => state.defect_solution);
   const defect_observations = useAppStore((state) => state.defect_observations);
+  const scrollViewRef = useKeyboardAwareScrollView();
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Registro de Defeitos e Observações</Text>
+    <ScrollView style={styles.container} ref={scrollViewRef}>
+      <CustomTitle title='Registro de Defeitos e Observações'/>
       <CustomInput
         label="Peça com defeito:"
         placeholder="Descreva a peça com defeito"
@@ -27,18 +29,18 @@ const DefectObservationStep = () => {
         onChangeText={(text) => updateReportField('defect_cause', text)}
       />
       <CustomInput
-        label="Solução:"
-        placeholder="Descreva a solução aplicada"
-        value={defect_solution || ''}
-        onChangeText={(text) => updateReportField('defect_solution', text)}
-      />
-      <CustomInput
         label="Observações:"
         placeholder="Adicione observações adicionais"
         value={defect_observations || ''}
         onChangeText={(text) => updateReportField('defect_observations', text)}
         multiline
         numberOfLines={4}
+      />
+      <CustomInput
+        label="Solução:"
+        placeholder="Descreva a solução aplicada"
+        value={defect_solution || ''}
+        onChangeText={(text) => updateReportField('defect_solution', text)}
       />
     </ScrollView>
   );
@@ -48,12 +50,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
   },
 });
 

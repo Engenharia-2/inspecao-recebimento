@@ -5,8 +5,9 @@ import CreateCustomFieldModal from '../../components/CreateCustomFieldModal';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 import { Colors } from '../../assets/Colors';
-import { stylesReport } from '../../styles/stylesReport';
 import { useAppStore } from '../../store';
+import { useKeyboardAwareScrollView } from '../../hooks/useKeyboardAwareScrollView';
+import CustomTitle from '../../components/CustomTitle';
 
 const DynamicFieldsStep: React.FC = () => {
   const customFields = useAppStore((state) => state.customFields);
@@ -14,21 +15,20 @@ const DynamicFieldsStep: React.FC = () => {
   const updateCustomFieldValue = useAppStore((state) => state.updateCustomFieldValue);
   const removeCustomField = useAppStore((state) => state.removeCustomField);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const scrollViewRef = useKeyboardAwareScrollView();
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Plano de Ação</Text>
+      <CustomTitle title='Plano de Ação'/>
         <Text style={styles.label}>
           Indique o plano de ação com o título e descreva a intervenção necessária.
         </Text>
-      </View>
         <CustomButton
           title="Adicionar Novo Campo de Texto"
           onPress={() => setIsModalVisible(true)}
         />
-        <View style={stylesReport.containerCamp}>
-        <ScrollView style={styles.scrollContent}>
+        <View style={styles.containerCamp}>
+        <ScrollView style={styles.scrollContent} ref={scrollViewRef}>
           <View style={styles.viewPadding}>
             {customFields.map((field) => (
               <View key={field.id} style={styles.inputGroup}>
@@ -65,17 +65,10 @@ const styles = StyleSheet.create({
     padding: 16,
     zIndex: 0,
   },
-  titleContainer:{
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
-  },
   label:{
     fontSize: 16,
+    textAlign: 'center',
+    padding: 8,
   },
   scrollContent: {
     paddingVertical: 25,
@@ -87,6 +80,17 @@ const styles = StyleSheet.create({
   inputGroup: {
     width: '100%',
     marginBottom: 8,
+  },
+  containerCamp:{
+    minHeight: 100,
+    height: 275,
+    width: '100%',
+    marginBottom: 30,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.lightBorder,
+    elevation: 4,
   },
 });
 

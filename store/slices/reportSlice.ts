@@ -226,6 +226,9 @@ export const createReportSlice: StateCreator<
         isQualityComplete: isQualityFilled(newState),
       };
     });
+    if (field === 'op' && get().currentSessionId) {
+      get().updateSessionName(get().currentSessionId as number, value as string);
+    }
     debouncedSave(() => get()._saveReport());
   },
 

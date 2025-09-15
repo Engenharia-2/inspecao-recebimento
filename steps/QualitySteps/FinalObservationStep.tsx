@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../assets/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomInput from '../../components/CustomInput';
+import CustomTitle from '../../components/CustomTitle';
 
 const FinalObservationStep: React.FC = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -16,7 +17,7 @@ const FinalObservationStep: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text style={styles.title}>Observações Finais</Text>
+        <CustomTitle title='Observações finais'/>
         <CustomInput
           label="Técnico Responsável:"
           placeholder="Nome do Técnico"
@@ -32,7 +33,6 @@ const FinalObservationStep: React.FC = () => {
           multiline
         />
       </View>
-
       <View style={styles.buttonContainer}>
         <CustomButton
             title="Fechar formulário"
@@ -49,11 +49,6 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'space-between',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
   buttonContainer: {
     paddingBottom: 20,
   },
@@ -69,6 +64,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 15,
     padding: 16,
+    paddingHorizontal: 16,
     fontSize: 16,
     backgroundColor: '#fff',
     elevation: 4, // Sombra para Android

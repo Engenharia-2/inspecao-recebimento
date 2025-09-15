@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text, View} from 'react-native';
+import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, Platform} from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomDropdown from '../../components/CustomDropdown';
+import CustomTitle from '../../components/CustomTitle';
 import { useAppStore } from '../../store';
 import { Colors } from '../../assets/Colors'
 
@@ -36,10 +37,13 @@ const IdentificationStep = () => {
   ];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}> Dados de identificação</Text>
-      </View>
+    <KeyboardAvoidingView 
+      style={{ flex: 1 }} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0} // Adjust this value as needed
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+      <CustomTitle title="Dados de identificação"/>
       <CustomInput label="OP" value={op || ''} onChangeText={(text) => updateReportField('op', text)} placeholder="Digite a Ordem de Produção" />
       <CustomInput label="Data de abertura" value={openDate || ''} onChangeText={(text) => updateReportField('openDate', text)} placeholder="DD/MM/AAAA" />
       <CustomInput label="Número de série" value={serialNumber || ''} onChangeText={(text) => updateReportField('serialNumber', text)} placeholder="Digite o número de série" />
@@ -51,6 +55,7 @@ const IdentificationStep = () => {
         placeholder="Selecione o Modelo" 
         zIndex={2000}
         zIndexInverse={1000}
+        dropDownDirection={"BOTTOM"}
       />
       <CustomDropdown 
         label="Tipo de ordem" 
@@ -60,9 +65,11 @@ const IdentificationStep = () => {
         placeholder="Selecione o Tipo de Ordem" 
         zIndex={1000}
         zIndexInverse={2000}
+        dropDownDirection={"BOTTOM"}
       />
       <CustomInput label="Nota fiscal" value={invoice || ''} onChangeText={(text) => updateReportField('invoice', text)} placeholder="Digite a nota fiscal" />
     </ScrollView>
+  </KeyboardAvoidingView>
   );
 };
 
@@ -71,16 +78,6 @@ const styles = StyleSheet.create({
     padding: 16,
     zIndex: 0,
   },
-  titleContainer:{
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
-  },
-  
 });
 
 export default IdentificationStep;

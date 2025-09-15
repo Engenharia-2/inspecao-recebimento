@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
 import { useImageManager } from '../../hooks/useImageManager';
 import { useAppStore } from '../../store';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
-import { Colors } from '../../assets/Colors';
+import CustomTitle from '../../components/CustomTitle';
 
 type AssistanceRouteProp = RouteProp<{ Assistance: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Assistance'>;
 
@@ -39,7 +39,7 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
   return (
     <View style={styles.container}>
         <View>
-            <Text style={styles.title}>Verificação de Imagens e Técnico</Text>
+            <CustomTitle title='Verificação de Imagens e Técnico'/>
             <CustomInput
                 label="Técnico que realizou os testes:"
                 placeholder="Nome do Técnico"
@@ -71,12 +71,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingBottom: 20, // Add some padding at the bottom
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
   },
 });
 

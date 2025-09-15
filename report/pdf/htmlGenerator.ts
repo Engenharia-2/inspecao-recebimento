@@ -33,10 +33,9 @@ export const createPdfContent = (data: {
     assistanceImages: AttachedImage[];
     qualityImages: AttachedImage[];
     customFields: CustomField[];
-    logoBase64: string; // Added logoBase64 parameter
 }): string => {
 
-  const { reportData, entryImages, assistanceImages, qualityImages, customFields, logoBase64 } = data;
+  const { reportData, entryImages, qualityImages, customFields } = data;
 
   let htmlContent = `
     <!DOCTYPE html>

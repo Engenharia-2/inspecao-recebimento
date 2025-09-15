@@ -6,7 +6,8 @@ import { useAppPermissions } from '../../hooks/useAppPermissions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
-import CustomButton from '../../components/CustomButton'; // Import CustomButton
+import CustomButton from '../../components/CustomButton'; 
+import CustomTitle from '../../components/CustomTitle';
 import { Colors } from '../../assets/Colors';
 
 type EntryRouteProp = RouteProp<{ Entry: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Entry'>;
@@ -45,9 +46,7 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Imagens de Entrada</Text>
-      </View>
+      <CustomTitle title='Imagens de Entrada'/>
       <View style={styles.content}>
         <ImageAttachment
           attachedImages={entryImages}
@@ -77,15 +76,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingBottom: 20, // Add some padding at the bottom
-  },
-  titleContainer:{
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
   },
 });
 

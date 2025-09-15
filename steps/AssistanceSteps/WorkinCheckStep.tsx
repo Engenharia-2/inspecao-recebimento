@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import CustomCheckbox from '../../components/CustomCheckbox';
 import { useAppStore } from '../../store';
 import { Colors } from "../../assets/Colors";
+import CustomTitle from '../../components/CustomTitle';
 
 const WorkinCheckStep = () => {
   const updateReportField = useAppStore((state) => state.updateReportField);
@@ -14,9 +15,7 @@ const WorkinCheckStep = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}> Verificação de funcionamento </Text>
-      </View>
+      <CustomTitle title='Verificação de funcionamento'/>
       <View style={styles.containerBox}>
         <CustomCheckbox
           label="Ligar equipamento"
@@ -52,15 +51,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  titleContainer:{
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
   },
   containerBox:{
     width: '100%',

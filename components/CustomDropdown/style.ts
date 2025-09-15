@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.lightBorder,
     borderRadius: 15,
+    elevation: 4,
   },
   dropdownContainer: {
     borderWidth: 1,

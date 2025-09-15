@@ -1,5 +1,4 @@
 
-import * as FileSystem from 'expo-file-system';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 const MAX_IMAGE_DIMENSION = 1024; // Max width or height for images

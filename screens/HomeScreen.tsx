@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAppStore } from '../store';
 import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../assets/Colors';
+import { InspectionSession } from '../report/types';
 
 type RootStackParamList = {
   Home: undefined;
@@ -17,6 +18,22 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 interface HomeScreenProps {
   navigation: HomeScreenNavigationProp;
 }
+
+// Memoized SessionItem component
+const SessionItem = React.memo(({ item, onSelect, onDelete }: { item: InspectionSession, onSelect: (id: number) => void, onDelete: (id: number) => void }) => {
+  return (
+    <View style={styles.sessionItemContainer}>
+      <TouchableOpacity style={styles.sessionItem} onPress={() => onSelect(item.id)}>
+        <Text style={styles.sessionName}>{item.name || 'Inspeção sem OP'}</Text>
+        <Text style={styles.sessionDate}>Iniciada em: {new Date(item.startTime).toLocaleString('pt-BR')}</Text>
+        {item.endTime && <Text style={styles.sessionDate}>Finalizada em: {new Date(item.endTime).toLocaleString('pt-BR')}</Text>}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(item.id)}>
+        <Text style={styles.deleteButtonText}>X</Text>
+      </TouchableOpacity>
+    </View>
+  );
+});
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const sessions = useAppStore((state) => state.measurementSessions);
@@ -43,12 +60,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleSessionSelect = async (sessionId: number) => {
+  const handleSessionSelect = useCallback(async (sessionId: number) => {
     await selectSession(sessionId);
     navigation.navigate('Select');
-  };
+  }, [selectSession, navigation]);
 
-  const handleDeleteSession = (sessionId: number) => {
+  const handleDeleteSession = useCallback((sessionId: number) => {
     Alert.alert(
       "Confirmar Exclusão",
       "Tem certeza que deseja deletar esta sessão? Esta ação não pode ser desfeita.",
@@ -64,20 +81,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         }
       ]
     );
-  };
+  }, [deleteSession]);
 
-  const renderSessionItem = ({ item }: { item: any }) => (
-    <View style={styles.sessionItemContainer}>
-      <TouchableOpacity style={styles.sessionItem} onPress={() => handleSessionSelect(item.id)}>
-        <Text style={styles.sessionName}>{item.name || 'Inspeção sem OP'}</Text>
-        <Text style={styles.sessionDate}>Iniciada em: {new Date(item.startTime).toLocaleString('pt-BR')}</Text>
-        {item.endTime && <Text style={styles.sessionDate}>Finalizada em: {new Date(item.endTime).toLocaleString('pt-BR')}</Text>}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteSession(item.id)}>
-        <Text style={styles.deleteButtonText}>X</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const renderSessionItem = useCallback(({ item }: { item: InspectionSession }) => (
+    <SessionItem item={item} onSelect={handleSessionSelect} onDelete={handleDeleteSession} />
+  ), [handleSessionSelect, handleDeleteSession]);
 
   return (
     <View style={styles.container}>
@@ -96,6 +104,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma inspeção encontrada.</Text>}
           style={styles.list}
+          windowSize={10}
+          initialNumToRender={10}
+          maxToRenderPerBatch={5}
         />
       )}
     </View>

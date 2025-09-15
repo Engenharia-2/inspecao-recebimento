@@ -11,6 +11,7 @@ interface CustomDropdownProps {
   placeholder?: string;
   zIndex?: number;
   zIndexInverse?: number;
+  dropDownDirection?: 'TOP' | 'BOTTOM' | 'AUTO';
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
@@ -21,6 +22,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   placeholder = 'Selecione...',
   zIndex = 1000,
   zIndexInverse = 1000,
+  dropDownDirection = 'AUTO',
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -42,6 +44,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         listMode="SCROLLVIEW"
         zIndex={zIndex}
         zIndexInverse={zIndexInverse}
+        dropDownDirection={dropDownDirection}
       />
     </View>
   );

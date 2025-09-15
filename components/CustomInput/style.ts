@@ -4,7 +4,7 @@ import { Colors } from '../../assets/Colors';
 export const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   label: {
     fontSize: 16,
@@ -20,5 +20,6 @@ export const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     color: Colors.textLight,
+    elevation: 4,
   },
 });

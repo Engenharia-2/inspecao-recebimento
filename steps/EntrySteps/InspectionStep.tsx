@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomCheckbox from '../../components/CustomCheckbox';
+import CustomTitle from '../../components/CustomTitle'
 import { useAppStore } from '../../store';
 import { Colors } from '../../assets/Colors';
 
@@ -23,9 +24,7 @@ const InspectionStep = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-     <View style={styles.titleContainer}>
-        <Text style={styles.title}> Inspeção dos componentes </Text>
-      </View>
+      <CustomTitle title='Inspeção dos componentes'/>
       <CustomInput 
         label="Funcionário"
         value={entryTechnician || ''} 
@@ -68,15 +67,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.lightBorder,
     elevation: 4,
-  },
-  titleContainer:{
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: Colors.textLight,
   },
 });
 

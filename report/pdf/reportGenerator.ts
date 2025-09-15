@@ -5,7 +5,6 @@ import { useAppStore } from '../../store';
 import { AttachedImage, ReportData } from '../types';
 import { createPdfContent } from './htmlGenerator';
 import { convertImageToBase64 } from './imageUtils';
-import * as FileSystem from 'expo-file-system'; // Import FileSystem
 
 export const generateReportPdfAndShare = async () => {
   const {
@@ -57,7 +56,6 @@ export const generateReportPdfAndShare = async () => {
       entryImages: processedEntry,
       assistanceImages: processedAssistance,
       qualityImages: processedQuality,
-      // Removed logoBase64 parameter
     });
 
     // 3. Print to PDF

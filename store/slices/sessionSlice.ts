@@ -15,6 +15,7 @@ export interface SessionActions {
   selectSession: (sessionId: number) => Promise<void>;
   deleteSession: (sessionId: number) => Promise<void>;
   endSession: (sessionId: number) => Promise<void>;
+  updateSessionName: (sessionId: number, name: string) => Promise<void>;
 }
 
 export type SessionSlice = SessionState & SessionActions;
@@ -34,15 +35,13 @@ export const createSessionSlice: StateCreator<
     if (!db) return;
     set({ isSessionsLoading: true });
     try {
-      // Modificado para buscar 'op' da tabela 'entry_data'
       const sessions = await db.getAllAsync<InspectionSession>(
         `SELECT 
           s.id, 
-          ed.op as name, -- Usa 'op' como 'name' para compatibilidade
+          s.name as name, 
           s.start_time as startTime, 
           s.end_time as endTime 
          FROM inspection_sessions s
-         LEFT JOIN entry_data ed ON s.id = ed.session_id
          ORDER BY s.start_time DESC`
       );
       set({ measurementSessions: sessions });
@@ -57,9 +56,10 @@ export const createSessionSlice: StateCreator<
     if (!db) return null;
     try {
       const now = new Date().toISOString();
-      // Removido 'name' e 'sessionName'
+      const sessionName = `Nova Inspeção ${new Date().toLocaleString('pt-BR')}`;
       const result = await db.runAsync(
-        `INSERT INTO inspection_sessions (start_time, end_time) VALUES (?, ?)`,
+        `INSERT INTO inspection_sessions (name, start_time, end_time) VALUES (?, ?, ?)`,
+        sessionName,
         now, null
       );
       const newSessionId = result.lastInsertRowId;
@@ -82,15 +82,13 @@ export const createSessionSlice: StateCreator<
     const db = get().db;
     if (!db) return;
     try {
-      // Modificado para buscar 'op' da tabela 'entry_data'
       const session = await db.getFirstAsync<InspectionSession>(
         `SELECT 
           s.id, 
-          ed.op as name, -- Usa 'op' como 'name'
+          s.name as name,
           s.start_time as startTime, 
           s.end_time as endTime 
          FROM inspection_sessions s
-         LEFT JOIN entry_data ed ON s.id = ed.session_id
          WHERE s.id = ?`,
         sessionId
       );
@@ -128,6 +126,17 @@ export const createSessionSlice: StateCreator<
       await get().loadAllSessions();
     } catch (err) {
       console.error("Failed to end session:", err);
+    }
+  },
+  updateSessionName: async (sessionId, name) => {
+    const db = get().db;
+    if (!db) return;
+
+    try {
+      await db.runAsync('UPDATE inspection_sessions SET name = ? WHERE id = ?', name, sessionId);
+      await get().loadAllSessions();
+    } catch (e) {
+      console.error('Failed to update session name', e);
     }
   },
 });

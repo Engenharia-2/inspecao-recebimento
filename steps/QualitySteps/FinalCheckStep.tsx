@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomCheckbox from '../../components/CustomCheckbox';
+import CustomTitle from '../../components/CustomTitle';
 import { useAppStore } from '../../store';
 import { Colors } from '../../assets/Colors';
 
@@ -17,7 +18,7 @@ const FinalCheckStep = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Finalização</Text>
+      <CustomTitle title='Inspeção dos componentes'/>
       <View style={styles.containerBox}>
         <CustomCheckbox
           label="Maleta"
@@ -68,11 +69,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   containerBox:{
     width: '100%',

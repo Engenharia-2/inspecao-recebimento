@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
 import { useImageManager } from '../../hooks/useImageManager';
 import { useAppStore } from '../../store';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomTitle from '../../components/CustomTitle';
 
 type QualityRouteProp = RouteProp<{ Quality: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Quality'>;
 
@@ -32,7 +33,7 @@ const FinalImagesCheck: React.FC<FinalImagesCheckProps> = ({ currentStepIndex })
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Verificação Final de Imagens</Text>
+      <CustomTitle title='Verificação Final de Imagens'/>
 
       <ImageAttachment
         attachedImages={qualityImages}
@@ -48,11 +49,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
 });
 

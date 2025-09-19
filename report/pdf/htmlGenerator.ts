@@ -35,7 +35,7 @@ export const createPdfContent = (data: {
     customFields: CustomField[];
 }): string => {
 
-  const { reportData, entryImages, qualityImages, customFields } = data;
+  const { reportData, entryImages, assistanceImages, qualityImages, customFields } = data;
 
   let htmlContent = `
     <!DOCTYPE html>
@@ -141,7 +141,7 @@ export const createPdfContent = (data: {
             </div>
             <div class="image-section section-space-images">
                 <h2 class="section-title">Imagens da Assistência</h2>
-                ${generateImageSection('Imagens da Assistência', qualityImages)}
+                ${generateImageSection('Imagens da Assistência', assistanceImages)}
             </div>
 
             <!-- Seção de Qualidade -->

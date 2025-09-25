@@ -7,8 +7,11 @@ import { createPdfContent } from './htmlGenerator';
 import { convertImageToBase64 } from './imageUtils';
 
 export const generateReportPdfAndShare = async () => {
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
   const {
-    op, openDate, serialNumber, model, orderType, invoice, entryTechnician, returnItems,
+    op, serialNumber, model, orderType, invoice, entryTechnician, returnItems,
     cleanCheck_equipmentCleaning, cleanCheck_screws, cleanCheck_hotGlue, cleanCheck_measurementCables,
     defect_part, defect_cause, defect_solution, defect_observations, assistanceTechnician,
     workingCheck_powerOn, workingCheck_buttonsLeds, workingCheck_predefinedTests, workingCheck_screen, workingCheck_caseMembranes,
@@ -22,7 +25,7 @@ export const generateReportPdfAndShare = async () => {
   try {
     // Reconstruct reportData object from granular state
     const reportData: ReportData = {
-      op, openDate, serialNumber, model, orderType, invoice, entryTechnician, returnItems,
+      op, openDate: formattedDate, serialNumber, model, orderType, invoice, entryTechnician, returnItems,
       cleanCheck_equipmentCleaning, cleanCheck_screws, cleanCheck_hotGlue, cleanCheck_measurementCables,
       defect_part, defect_cause, defect_solution, defect_observations, assistanceTechnician,
       workingCheck_powerOn, workingCheck_buttonsLeds, workingCheck_predefinedTests, workingCheck_screen, workingCheck_caseMembranes,

@@ -30,7 +30,7 @@ const DynamicFieldsStep: React.FC = () => {
         <View style={styles.containerCamp}>
         <ScrollView style={styles.scrollContent} ref={scrollViewRef}>
           <View style={styles.viewPadding}>
-            {customFields.map((field) => (
+            {(customFields || []).map((field) => (
               <View key={field.id} style={styles.inputGroup}>
                 <CustomInput
                   label={`${field.title}:`}

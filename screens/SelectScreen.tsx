@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -10,7 +10,7 @@ import { useReportGenerator } from '../hooks/useReportGenerator'; // Import hook
 
 type RootStackParamList = {
   Home: undefined;
-  Select: undefined;
+  Select: { sessionId: number };
   Entry: undefined;
   Assistance: undefined;
   Quality: undefined;
@@ -23,8 +23,16 @@ interface SelectScreenProps {
 }
 
 const SelectScreen: React.FC<SelectScreenProps> = ({ navigation }) => {
-  const { isEntryComplete, isAssistanceComplete, isQualityComplete } = useAppStore();
-  const { isGenerating, generateReport } = useReportGenerator();
+  const { isEntryComplete, isAssistanceComplete, isQualityComplete, currentSession } = useAppStore();
+  const { isGenerating, generateReport } = useReportGenerator(); // Import hook
+
+  useEffect(() => {
+    // console.log("SelectScreen: currentSession changed:", currentSession);
+    if (!currentSession) {
+      // console.log("SelectScreen: No currentSession, navigating to Home.");
+      navigation.navigate('Home');
+    }
+  }, [currentSession, navigation]);
 
   const isAllComplete = isEntryComplete && isAssistanceComplete && isQualityComplete;
 

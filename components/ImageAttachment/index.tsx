@@ -29,12 +29,12 @@ const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage
     );
   };
 
-  const renderImageItem = ({ item }: { item: AttachedImage }) => (
-    <View >
+    const renderImageItem = ({ item }: { item: AttachedImage }) => (
+    <View key={item.id?.toString() || item.uri}>
       <TouchableOpacity onPress={() => handleRemoveImage(item)} style={styles.removeImageButton}>
         <Text style={[styles.buttonText, styles.buttonTextRemove]}>X</Text>
       </TouchableOpacity>
-      <Image key={item.uri} source={{ uri: item.uri }} style={styles.selectedImage} />
+      <Image source={{ uri: item.uri }} style={styles.selectedImage} />
     </View>
   );
 

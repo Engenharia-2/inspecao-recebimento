@@ -8,7 +8,9 @@ export type AttachedImage = {
   id?: number;
   sessionId: number;
   stage: 'entry' | 'assistance' | 'quality'; // De qual etapa é a imagem
-  uri: string;
+  uri: string; // URI local do arquivo
+  name: string; // Nome do arquivo (ex: image.jpg)
+  type: string; // Mime type (ex: image/jpeg)
 };
 
 /**

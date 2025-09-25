@@ -1,12 +1,19 @@
-
 import { StateCreator } from 'zustand';
 import { InspectionSession } from '../../report/types';
 import { AppStore } from '../index';
+import {
+  createRelatorio,
+  deleteRelatorio,
+  fetchRelatorioById,
+  fetchRelatorios,
+  updateRelatorio,
+} from '../../routes/apiService';
 
 export interface SessionState {
   measurementSessions: InspectionSession[];
   currentSession: InspectionSession | null;
   isSessionsLoading: boolean;
+  isAppReady: boolean;
 }
 
 export interface SessionActions {
@@ -16,6 +23,7 @@ export interface SessionActions {
   deleteSession: (sessionId: number) => Promise<void>;
   endSession: (sessionId: number) => Promise<void>;
   updateSessionName: (sessionId: number, name: string) => Promise<void>;
+  initApp: () => Promise<void>;
 }
 
 export type SessionSlice = SessionState & SessionActions;
@@ -29,82 +37,58 @@ export const createSessionSlice: StateCreator<
   measurementSessions: [],
   currentSession: null,
   isSessionsLoading: false,
+  isAppReady: false, // Inicializado como false
+  initApp: async () => {
+    try {
+      await get().loadAllSessions();
+      set({ isAppReady: true });
+    } catch (error) {
+      console.error("Failed to initialize app:", error);
+      // Poderíamos adicionar um estado de erro aqui se necessário
+    }
+  },
   loadAllSessions: async () => {
-    if (get().isSessionsLoading) return; // Prevent concurrent reloads
-    const db = get().db;
-    if (!db) return;
+    if (get().isSessionsLoading) return;
     set({ isSessionsLoading: true });
     try {
-      const sessions = await db.getAllAsync<InspectionSession>(
-        `SELECT 
-          s.id, 
-          s.name as name, 
-          s.start_time as startTime, 
-          s.end_time as endTime 
-         FROM inspection_sessions s
-         ORDER BY s.start_time DESC`
-      );
-      set({ measurementSessions: sessions });
+      const sessions = await fetchRelatorios();
+      set({ measurementSessions: sessions as InspectionSession[] });
     } catch (err) {
-      console.error("Failed to load sessions:", err);
+      console.error("sessionSlice: Failed to load sessions:", err);
     } finally {
       set({ isSessionsLoading: false });
     }
   },
   startNewSession: async () => {
-    const db = get().db;
-    if (!db) return null;
     try {
-      const now = new Date().toISOString();
-      const sessionName = `Nova Inspeção ${new Date().toLocaleString('pt-BR')}`;
-      const result = await db.runAsync(
-        `INSERT INTO inspection_sessions (name, start_time, end_time) VALUES (?, ?, ?)`,
-        sessionName,
-        now, null
-      );
-      const newSessionId = result.lastInsertRowId;
-      if (newSessionId) {
-        await db.runAsync(`INSERT INTO entry_data (session_id) VALUES (?)`, newSessionId);
-        await db.runAsync(`INSERT INTO assistance_data (session_id) VALUES (?)`, newSessionId);
-        await db.runAsync(`INSERT INTO quality_data (session_id) VALUES (?)`, newSessionId);
-        
+      const now = new Date();
+      const sessionName = `Nova Inspeção ${now.toLocaleString('pt-BR')}`;
+      const newRelatorio = await createRelatorio({ name: sessionName, startTime: now });
+      if (newRelatorio && newRelatorio.id) {
         await get().loadAllSessions();
-        await get().selectSession(newSessionId);
-        return newSessionId;
+        await get().selectSession(newRelatorio.id);
+        return newRelatorio.id;
       }
       return null;
     } catch (err) {
-      console.error("Failed to start new session:", err);
+      console.error("sessionSlice: Failed to start new session:", err);
       return null;
     }
   },
   selectSession: async (sessionId) => {
-    const db = get().db;
-    if (!db) return;
     try {
-      const session = await db.getFirstAsync<InspectionSession>(
-        `SELECT 
-          s.id, 
-          s.name as name,
-          s.start_time as startTime, 
-          s.end_time as endTime 
-         FROM inspection_sessions s
-         WHERE s.id = ?`,
-        sessionId
-      );
+      const session = await fetchRelatorioById(sessionId);
       if (session) {
-        set({ currentSession: session });
-        get().loadReportForSession(session.id);
+        set({ currentSession: session as InspectionSession });
+        get().loadReportForSession(session.id as number);
       }
     } catch (err) {
-      console.error("Failed to select session:", err);
+      console.error("sessionSlice: Failed to select session:", err);
     }
   },
   deleteSession: async (sessionId) => {
-    const db = get().db;
-    if (!db) return;
     try {
-      await db.runAsync(`DELETE FROM inspection_sessions WHERE id = ?`, sessionId);
+      await deleteRelatorio(sessionId);
       if (get().currentSession?.id === sessionId) {
         set({ currentSession: null });
         get().resetReportState();
@@ -115,11 +99,9 @@ export const createSessionSlice: StateCreator<
     }
   },
   endSession: async (sessionId) => {
-    const db = get().db;
-    if (!db) return;
     try {
-      const now = new Date().toISOString();
-      await db.runAsync(`UPDATE inspection_sessions SET end_time = ? WHERE id = ?`, now, sessionId);
+      const now = new Date();
+      await updateRelatorio(sessionId, { endTime: now });
       if (get().currentSession?.id === sessionId) {
         set({ currentSession: null });
       }
@@ -129,11 +111,8 @@ export const createSessionSlice: StateCreator<
     }
   },
   updateSessionName: async (sessionId, name) => {
-    const db = get().db;
-    if (!db) return;
-
     try {
-      await db.runAsync('UPDATE inspection_sessions SET name = ? WHERE id = ?', name, sessionId);
+      await updateRelatorio(sessionId, { name });
       await get().loadAllSessions();
     } catch (e) {
       console.error('Failed to update session name', e);

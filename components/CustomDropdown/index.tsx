@@ -45,6 +45,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         zIndex={zIndex}
         zIndexInverse={zIndexInverse}
         dropDownDirection={dropDownDirection}
+        maxHeight={500}
       />
     </View>
   );

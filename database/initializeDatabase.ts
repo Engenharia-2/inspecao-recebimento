@@ -2,8 +2,6 @@
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 
-const SCHEMA_VERSION = 2; // Incremented schema version
-
 /**
  * Abre a conexão com o banco de dados SQLite, executa migrações e inicializa as tabelas.
  */
@@ -71,14 +69,14 @@ export const initializeDatabase = async (): Promise<SQLiteDatabase> => {
           );
         `
         );
-        console.log('Database: Initial tables created.');
+        // console.log('Database: Initial tables created.');
       }
 
       // Migration for version 2: Add 'name' column to inspection_sessions
       if (currentVersion < 2) {
         try {
           await db.execAsync(`ALTER TABLE inspection_sessions ADD COLUMN name TEXT NOT NULL DEFAULT ''`);
-          console.log('Database Migration: Column \'name\' added to \'inspection_sessions\'.');
+          // console.log('Database Migration: Column \'name\' added to \'inspection_sessions\'.');
         } catch (e) {
           // This can happen if the user has an old version of the database and the column was added manually
           if (!e.message.includes('duplicate column name')) {
@@ -90,11 +88,11 @@ export const initializeDatabase = async (): Promise<SQLiteDatabase> => {
 
       // Update the database version to the latest
       await db.execAsync(`PRAGMA user_version = ${SCHEMA_VERSION}`);
-      console.log(`Database: Schema migrated to version ${SCHEMA_VERSION}.`);
+      // console.log(`Database: Schema migrated to version ${SCHEMA_VERSION}.`);
     }
   });
 
-  console.log('Database: Connection established and schema is up-to-date.');
+  // console.log('Database: Connection established and schema is up-to-date.');
   return db;
 };
 

@@ -3,7 +3,6 @@ import React, { useRef, FC } from 'react';
 import { Text, View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { CameraView } from 'expo-camera';
 import { useNavigation, useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
-import * as FileSystem from 'expo-file-system'; // Import FileSystem
 import { useAppPermissions } from '../hooks/useAppPermissions';
 
 // Updated RootStackParamList to be consistent with App.tsx
@@ -33,33 +32,23 @@ const CameraScreen: FC = () => {
       return;
     }
 
-    try {
-      const photo = await cameraRef.current.takePictureAsync({ quality: 0.7 }); // Removed base64: true
-      if (photo && photo.uri) {
-        const fileName = photo.uri.split('/').pop();
-        if (!fileName) {
-          Alert.alert('Erro', 'Não foi possível extrair o nome do arquivo da imagem.');
-          return;
-        }
-        const persistentUri = `${FileSystem.documentDirectory}images/${fileName}`;
-        await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}images/`, { intermediates: true });
+        try {
+          const photo = await cameraRef.current.takePictureAsync({ quality: 0.5, base64: false });
 
-        await FileSystem.moveAsync({
-          from: photo.uri,
-          to: persistentUri,
-        });
-
-        navigation.navigate({ 
-          name: returnScreen,
-          params: { newImageUri: persistentUri, returnStepIndex },
-          merge: true,
-        });
-      }
-    } catch (error) {
-      console.error('CameraScreen: Erro ao tirar foto:', error);
-      Alert.alert('Erro', 'Não foi possível tirar a foto. Tente novamente.');
-    }
-  };
+          if (photo && photo.uri) {
+            // Retorna a URI local do arquivo da imagem
+            navigation.navigate({
+              name: returnScreen,
+              params: { newImageUri: photo.uri, returnStepIndex },
+              merge: true,
+            });
+          } else {
+            Alert.alert('Erro', 'Não foi possível capturar a foto.');
+          }
+        } catch (error) {
+          console.error('CameraScreen: Erro ao tirar foto:', error);
+          Alert.alert('Erro', 'Não foi possível tirar a foto. Tente novamente.');
+        }  };
 
   if (!isFocused) {
     return <View style={stylesCamera.container} />;

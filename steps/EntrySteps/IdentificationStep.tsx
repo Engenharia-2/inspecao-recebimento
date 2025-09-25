@@ -1,40 +1,22 @@
-import React from 'react';
-import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, Platform} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomDropdown from '../../components/CustomDropdown';
 import CustomTitle from '../../components/CustomTitle';
+import CustomQRModal from '../../components/CustomQRmodal';
 import { useAppStore } from '../../store';
-import { Colors } from '../../assets/Colors'
+import { MaterialIcons } from '@expo/vector-icons';
+import { Colors } from '../../assets/Colors';
 
 const IdentificationStep = () => {
   // Granular selectors for performance optimization
   const updateReportField = useAppStore((state) => state.updateReportField);
   const op = useAppStore((state) => state.op);
-  const openDate = useAppStore((state) => state.openDate);
   const serialNumber = useAppStore((state) => state.serialNumber);
-  const model = useAppStore((state) => state.model);
-  const orderType = useAppStore((state) => state.orderType);
-  const invoice = useAppStore((state) => state.invoice);
 
-  const modelItems = [
-    { label: 'Surge Test 4kv M1', value: 'Surge Test 4kv M1' },
-    { label: 'Surge Test 4kv (antigo)', value: 'Surge Test 4kv (antigo)' },
-    { label: 'Surge Test 4kv bancada', value: 'Surge Test 4kv bancada' },
-    { label: 'Surge teste 15kv', value: 'Surge teste 15kv' },
-    { label: 'Surge teste 15kv MT', value: 'Surge teste 15kv MT' },
-    { label: 'Megohmetro 1kv', value: 'Megohmetro 1kv' },
-    { label: 'Megohmetro 5kv', value: 'Megohmetro 5kv' },
-    { label: 'Miliohmimetro bancada', value: 'Miliohmimetro bancada' },
-    { label: 'Miliohmimetro (sem bateria)', value: 'Miliohmimetro (sem bateria)' },
-    { label: 'Miliohmimetro', value: 'Miliohmimetro' },
-    { label: 'Engenheirado', value: 'Engenheirado' },
-  ];
+  const [isQRModalVisible, setQRModalVisible] = useState(false);
 
-  const orderTypeItems = [
-    { label: 'Revisão', value: 'Revisão' },
-    { label: 'Avulso', value: 'Avulso' },
-    { label: 'Garantia', value: 'Garantia' },
-  ];
+
 
   return (
     <KeyboardAvoidingView 
@@ -44,30 +26,27 @@ const IdentificationStep = () => {
     >
       <ScrollView contentContainerStyle={styles.container}>
       <CustomTitle title="Dados de identificação"/>
-      <CustomInput label="OP" value={op || ''} onChangeText={(text) => updateReportField('op', text)} placeholder="Digite a Ordem de Produção" />
-      <CustomInput label="Data de abertura" value={openDate || ''} onChangeText={(text) => updateReportField('openDate', text)} placeholder="DD/MM/AAAA" />
+      <View style={styles.opContainer}>
+        <View style={styles.opInput}>
+          <CustomInput label="OP" value={op || ''} onChangeText={(text) => updateReportField('op', text)} placeholder="Digite a Ordem de Produção" />
+        </View>
+        <TouchableOpacity style={styles.qrButton} onPress={() => setQRModalVisible(true)}>
+          <MaterialIcons name="qr-code-scanner" size={32} color={Colors.black} />
+        </TouchableOpacity>
+        <CustomQRModal
+        visible={isQRModalVisible}
+        onClose={() => setQRModalVisible(false)}
+        onQRCodeScanned={(data) => {
+          updateReportField('serialNumber', data);
+          const opValue = data.split('-')[1];
+          if (opValue) {
+            updateReportField('op', opValue);
+          }
+          setQRModalVisible(false);
+        }}
+      />
+      </View>
       <CustomInput label="Número de série" value={serialNumber || ''} onChangeText={(text) => updateReportField('serialNumber', text)} placeholder="Digite o número de série" />
-      <CustomDropdown 
-        label="Modelo" 
-        value={model || null} 
-        items={modelItems} 
-        onValueChange={(value) => updateReportField('model', value)} 
-        placeholder="Selecione o Modelo" 
-        zIndex={2000}
-        zIndexInverse={1000}
-        dropDownDirection={"BOTTOM"}
-      />
-      <CustomDropdown 
-        label="Tipo de ordem" 
-        value={orderType || null} 
-        items={orderTypeItems} 
-        onValueChange={(value) => updateReportField('orderType', value)} 
-        placeholder="Selecione o Tipo de Ordem" 
-        zIndex={1000}
-        zIndexInverse={2000}
-        dropDownDirection={"BOTTOM"}
-      />
-      <CustomInput label="Nota fiscal" value={invoice || ''} onChangeText={(text) => updateReportField('invoice', text)} placeholder="Digite a nota fiscal" />
     </ScrollView>
   </KeyboardAvoidingView>
   );
@@ -77,6 +56,26 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     zIndex: 0,
+  },
+  opContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  opInput: {
+    flex: 1,
+  },
+  qrButton: {
+    backgroundColor: Colors.white,
+    borderRadius: 15,
+    paddingHorizontal: 14,
+    height: 48, // Same height as the input
+    justifyContent: 'center',
+    marginLeft: 8,
+    marginTop: 22,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: Colors.lightBorder,
   },
 });
 

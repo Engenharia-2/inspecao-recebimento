@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
 import { useImageManager } from '../../hooks/useImageManager';
 import { useAppPermissions } from '../../hooks/useAppPermissions';
@@ -8,7 +8,6 @@ import { useAppStore } from '../../store';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import CustomButton from '../../components/CustomButton'; 
 import CustomTitle from '../../components/CustomTitle';
-import { Colors } from '../../assets/Colors';
 
 type EntryRouteProp = RouteProp<{ Entry: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Entry'>;
 
@@ -30,7 +29,7 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
 
   useEffect(() => {
     if (route.params?.newImageUri) {
-      processAndSaveImage(route.params.newImageUri, route.params?.imageDescription || '');
+            processAndSaveImage({ uri: route.params.newImageUri });
       // Clear params to avoid re-triggering the effect
       navigation.setParams({ newImageUri: undefined, imageDescription: undefined });
 

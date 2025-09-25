@@ -9,11 +9,11 @@ import AssistanceScreen from './screens/AssistanceScreen';
 import QualityScreen from './screens/QualityScreen';
 import CameraScreen from './screens/CameraScreen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useDatabaseInitializer, useAppStore } from './store';
+import { useAppStore, useAppInitializer } from './store';
 
 type RootStackParamList = {
   Home: undefined;
-  Select: undefined;
+  Select: { sessionId: number };
   Entry: { newImageUri?: string; imageDescription?: string };
   Assistance: { newImageUri?: string; imageDescription?: string };
   Quality: { newImageUri?: string; imageDescription?: string };
@@ -23,15 +23,7 @@ type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 function AppContent() {
-  const { isAppReady, dbError } = useAppStore();
-
-  if (dbError) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Erro ao inicializar o app: {dbError}</Text>
-      </View>
-    );
-  }
+  const { isAppReady } = useAppStore();
 
   if (!isAppReady) {
     return (
@@ -66,7 +58,7 @@ function AppContent() {
 }
 
 export default function App() {
-  useDatabaseInitializer();
+  useAppInitializer();
 
   return (
     <GestureHandlerRootView style={{ flex: 1, marginTop: 40 }}>

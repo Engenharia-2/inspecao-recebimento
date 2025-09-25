@@ -1,24 +1,22 @@
 import { create } from 'zustand';
-import { createDatabaseSlice, DatabaseSlice } from './slices/databaseSlice';
 import { createSessionSlice, SessionSlice } from './slices/sessionSlice';
 import { createReportSlice, ReportSlice } from './slices/reportSlice';
 import React from 'react';
 
 // Combina todos os slices em um único tipo
-export type AppStore = DatabaseSlice & SessionSlice & ReportSlice;
+export type AppStore = SessionSlice & ReportSlice;
 
 // Cria o store do Zustand
 export const useAppStore = create<AppStore>()((...a) => ({
-  ...createDatabaseSlice(...a),
   ...createSessionSlice(...a),
   ...createReportSlice(...a),
 }));
 
-// Hook para inicializar o banco de dados e carregar dados iniciais
-export const useDatabaseInitializer = () => {
-  const { initDb } = useAppStore();
+// Hook para inicializar o aplicativo (carregar sessões da API)
+export const useAppInitializer = () => {
+  const { initApp } = useAppStore();
 
   React.useEffect(() => {
-    initDb();
-  }, [initDb]);
+    initApp();
+  }, [initApp]);
 };

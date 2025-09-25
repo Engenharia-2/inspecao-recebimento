@@ -1,15 +1,17 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import CustomButton from '../components/CustomButton';
+import CustomSearch from '../components/CustomSearch';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAppStore } from '../store';
 import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
+import { createRelatorio } from '../routes/apiService';
 
 type RootStackParamList = {
   Home: undefined;
-  Select: undefined;
+  Select: { sessionId: number };
   Entry: undefined;
 };
 
@@ -43,26 +45,50 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const startNewSession = useAppStore((state) => state.startNewSession);
   const deleteSession = useAppStore((state) => state.deleteSession);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredSessions, setFilteredSessions] = useState<InspectionSession[]>([]);
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    console.log("HomeScreen: useEffect isFocused:", isFocused);
     if (isFocused) {
       loadAllSessions();
     }
   }, [isFocused, loadAllSessions]);
 
-  const handleNewEntry = async () => {
-    const newSessionId = await startNewSession();
-    if (newSessionId) {
-      navigation.navigate('Select');
+  useEffect(() => {
+    // console.log("HomeScreen: measurementSessions updated:", sessions);
+    if (searchQuery.trim() === '') {
+      setFilteredSessions(sessions);
     } else {
-      Alert.alert("Erro", "Não foi possível iniciar uma nova sessão de inspeção.");
+      const filtered = sessions.filter((session) =>
+        session.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredSessions(filtered);
+    }
+  }, [searchQuery, sessions]);
+
+  const handleNewEntry = async () => {
+    try {
+      const novoRelatorio = await createRelatorio({
+        name: 'Nova Inspeção',
+        startTime: new Date(),
+      });
+      if (novoRelatorio && novoRelatorio.id) {
+        navigation.navigate('Select', { sessionId: novoRelatorio.id });
+      } else {
+        Alert.alert("Erro", "Não foi possível obter o ID do novo relatório.");
+      }
+    } catch (error) {
+      console.error("Erro ao criar novo relatório:", error);
+      Alert.alert("Erro de API", "Falha ao criar uma nova inspeção. Verifique sua conexão e tente novamente.");
     }
   };
 
   const handleSessionSelect = useCallback(async (sessionId: number) => {
     await selectSession(sessionId);
-    navigation.navigate('Select');
+    navigation.navigate('Select', { sessionId });
   }, [selectSession, navigation]);
 
   const handleDeleteSession = useCallback((sessionId: number) => {
@@ -95,11 +121,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         style={styles.button}
       />
       <Text style={styles.listTitle}>Inspeções Abertas: </Text>
+      <CustomSearch
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Pesquisar por OP..."
+      />
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors.primary} />
       ) : (
         <FlatList
-          data={sessions}
+          data={filteredSessions}
           renderItem={renderSessionItem}
           keyExtractor={(item) => item.id.toString()}
           ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma inspeção encontrada.</Text>}

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import IdentificationStep from '../steps/EntrySteps/IdentificationStep';
+import ModelStep from '../steps/EntrySteps/ModelStep';
 import InspectionStep from '../steps/EntrySteps/InspectionStep';
 import ImageAttachmentStep from '../steps/EntrySteps/ImageAttachmentStep';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
@@ -34,9 +35,12 @@ const EntryScreen = () => {
         <IdentificationStep />
       </View>
       <View key="2">
-        <InspectionStep />
+        <ModelStep />
       </View>
       <View key="3">
+        <InspectionStep />
+      </View>
+      <View key="4">
         <ImageAttachmentStep currentStepIndex={currentPage} />
       </View>
     </PagerView>

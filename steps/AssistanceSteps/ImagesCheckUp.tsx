@@ -25,7 +25,7 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
 
   useEffect(() => {
     if (route.params?.newImageUri) {
-      processAndSaveImage(route.params.newImageUri, route.params?.imageDescription || '');
+            processAndSaveImage({ uri: route.params.newImageUri });
       navigation.setParams({ newImageUri: undefined, imageDescription: undefined });
 
       if (route.params.returnStepIndex !== undefined) {

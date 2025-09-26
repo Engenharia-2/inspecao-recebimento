@@ -4,18 +4,10 @@ import * as FileSystem from 'expo-file-system';
 import { useCallback } from 'react';
 import { useAppStore } from '../store/';
 import { AttachedImage } from '../report/types';
-import { useNavigation } from '@react-navigation/native';
 import { useAppPermissions } from './useAppPermissions'; // Import useAppPermissions
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
-const stageToScreenMap = {
-  entry: 'Entry',
-  assistance: 'Assistance',
-  quality: 'Quality',
-};
-
 export const useImageManager = (stage: 'entry' | 'assistance' | 'quality') => {
-  const navigation = useNavigation<any>();
   const addAttachedImage = useAppStore((state) => state.addAttachedImage);
   const removeAttachedImage = useAppStore((state) => state.removeAttachedImage);
   const { requestCameraPermissions } = useAppPermissions(); // Get permissions hook
@@ -73,21 +65,20 @@ export const useImageManager = (stage: 'entry' | 'assistance' | 'quality') => {
         handleImageLibraryResponse
       );
     }, [handleImageLibraryResponse]);
-  const takePicture = useCallback((returnStepIndex?: number) => {
-    // Request camera permissions BEFORE navigating
-    requestCameraPermissions().then(hasCameraPermission => {
-      if (!hasCameraPermission) {
+  const openCameraModal = useAppStore((state) => state.openCameraModal);
+
+  const takePicture = useCallback(() => {
+    requestCameraPermissions().then(hasPermission => {
+      if (!hasPermission) {
         Alert.alert('Permissão Necessária', 'A permissão da câmera é essencial para tirar fotos.');
         return;
       }
-      const returnScreen = stageToScreenMap[stage];
-      navigation.navigate('CameraScreen', {
-          description: '', // No description needed for CameraScreen
-          returnScreen,
-          returnStepIndex // Pass the index
+      // Abre o modal da câmera e passa a função de processamento como callback
+      openCameraModal((photo) => {
+        processAndSaveImage({ uri: photo.uri, fileName: `photo_${Date.now()}.jpg`, type: 'image/jpeg' });
       });
     });
-  }, [navigation, stage, requestCameraPermissions]);
+  }, [requestCameraPermissions, openCameraModal, processAndSaveImage]);
 
   const deleteImage = useCallback(async (imageToDelete: AttachedImage) => {
     // If the image is from FileSystem.documentDirectory, attempt to delete the file

@@ -7,7 +7,7 @@ import SelectScreen from './screens/SelectScreen';
 import EntryScreen from './screens/EntryScreen';
 import AssistanceScreen from './screens/AssistanceScreen';
 import QualityScreen from './screens/QualityScreen';
-import CameraScreen from './screens/CameraScreen';
+import CameraModal from './components/CameraModal'; // Importa o novo modal
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAppStore, useAppInitializer } from './store';
 
@@ -17,7 +17,7 @@ type RootStackParamList = {
   Entry: { newImageUri?: string; imageDescription?: string };
   Assistance: { newImageUri?: string; imageDescription?: string };
   Quality: { newImageUri?: string; imageDescription?: string };
-  CameraScreen: { description: string, returnScreen: keyof RootStackParamList };
+  // CameraScreen foi removida
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -38,20 +38,13 @@ function AppContent() {
     <NavigationContainer>
       <Stack.Navigator 
         initialRouteName="Home"
-        screenOptions={{ headerShown: false }} // Hide header for all screens
+        screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Select" component={SelectScreen} />
         <Stack.Screen name="Entry" component={EntryScreen} />
         <Stack.Screen name="Assistance" component={AssistanceScreen} />
         <Stack.Screen name="Quality" component={QualityScreen} />
-        <Stack.Screen 
-          name="CameraScreen" 
-          component={CameraScreen} 
-          options={{
-            presentation: 'modal', 
-          }}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -59,10 +52,16 @@ function AppContent() {
 
 export default function App() {
   useAppInitializer();
+  const { isCameraModalVisible, closeCameraModal, _handlePictureTaken } = useAppStore();
 
   return (
     <GestureHandlerRootView style={{ flex: 1, marginTop: 40 }}>
       <AppContent />
+      <CameraModal
+        isVisible={isCameraModalVisible}
+        onClose={closeCameraModal}
+        onPictureTaken={_handlePictureTaken}
+      />
     </GestureHandlerRootView>
   );
 }

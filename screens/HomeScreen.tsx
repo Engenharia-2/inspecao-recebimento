@@ -48,14 +48,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredSessions, setFilteredSessions] = useState<InspectionSession[]>([]);
 
-  const isFocused = useIsFocused();
+      const isFocused = useIsFocused();
 
   useEffect(() => {
-    console.log("HomeScreen: useEffect isFocused:", isFocused);
     if (isFocused) {
       loadAllSessions();
     }
-  }, [isFocused, loadAllSessions]);
+  }, [isFocused]); // Removido loadAllSessions das dependências para evitar loops
 
   useEffect(() => {
     // console.log("HomeScreen: measurementSessions updated:", sessions);

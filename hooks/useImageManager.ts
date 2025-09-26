@@ -44,16 +44,28 @@ export const useImageManager = (stage: 'entry' | 'assistance' | 'quality') => {
     }
   }, [stage, addAttachedImage]);
 
-    const handleImageLibraryResponse = useCallback(async (response: ImagePickerResponse) => {
-      if (response.didCancel) return;
-      if (response.errorMessage) {
-        Alert.alert('Erro', `Erro do ImagePicker: ${response.errorMessage}`);
-        return;
+  const handleImageLibraryResponse = useCallback(async (response: ImagePickerResponse) => {
+    if (response.didCancel) return;
+    if (response.errorMessage) {
+      Alert.alert('Erro', `Erro do ImagePicker: ${response.errorMessage}`);
+      return;
+    }
+    if (response.assets && response.assets[0]) {
+      const asset = response.assets[0];
+      // Garante que a imagem seja copiada localmente para uma URI confiável
+      const localUri = `${FileSystem.cacheDirectory}images/${Date.now()}-${asset.fileName}`;
+      try {
+        await FileSystem.copyAsync({
+          from: asset.uri,
+          to: localUri,
+        });
+        processAndSaveImage({ ...asset, uri: localUri });
+      } catch (e) {
+        console.error("Erro ao copiar imagem da galeria:", e);
+        Alert.alert("Erro", "Não foi possível acessar a imagem da galeria.");
       }
-          if (response.assets && response.assets[0]) {
-            // Passa o primeiro asset inteiro para o processador
-            processAndSaveImage(response.assets[0]);
-          }    }, [processAndSaveImage]);
+    }
+  }, [processAndSaveImage]);
   
     const pickImage = useCallback(() => {
       launchImageLibrary(

@@ -6,6 +6,7 @@ import {
   deleteRelatorio,
   fetchRelatorioById,
   fetchRelatorios,
+    updateReportData,
   updateRelatorio,
 } from '../../routes/apiService';
 
@@ -79,8 +80,8 @@ export const createSessionSlice: StateCreator<
     try {
       const session = await fetchRelatorioById(sessionId);
       if (session) {
-        set({ currentSession: session as InspectionSession });
-        get().loadReportForSession(session.id as number);
+                set({ currentSession: session as InspectionSession });
+        get().loadReportForSession(session, session.id as number);
       }
     } catch (err) {
       console.error("sessionSlice: Failed to select session:", err);
@@ -101,7 +102,7 @@ export const createSessionSlice: StateCreator<
   endSession: async (sessionId) => {
     try {
       const now = new Date();
-      await updateRelatorio(sessionId, { endTime: now });
+            await updateReportData(sessionId, { endTime: now });
       if (get().currentSession?.id === sessionId) {
         set({ currentSession: null });
       }
@@ -110,12 +111,17 @@ export const createSessionSlice: StateCreator<
       console.error("Failed to end session:", err);
     }
   },
-  updateSessionName: async (sessionId, name) => {
-    try {
-      await updateRelatorio(sessionId, { name });
-      await get().loadAllSessions();
-    } catch (e) {
-      console.error('Failed to update session name', e);
-    }
-  },
-});
+    updateSessionName: async (sessionId, name) => {
+      try {
+        // Atualiza o nome no backend
+        await updateReportData(sessionId, { name });
+        // Atualiza o nome diretamente no estado local para evitar recarregar a lista
+        set(state => ({
+          measurementSessions: state.measurementSessions.map(session =>
+            session.id === sessionId ? { ...session, name } : session
+          )
+        }));
+      } catch (e) {
+        console.error('Failed to update session name', e);
+      }
+    },});

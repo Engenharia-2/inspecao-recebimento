@@ -6,7 +6,7 @@ import {
   deleteRelatorio,
   fetchRelatorioById,
   fetchRelatorios,
-    updateReportData,
+  updateReportData,
   updateRelatorio,
 } from '../../routes/apiService';
 

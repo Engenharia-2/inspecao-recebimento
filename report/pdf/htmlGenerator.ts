@@ -47,6 +47,7 @@ export const createPdfContent = (data: {
                 font-family: sans-serif;
                 margin: 0; /* Remove default body margin */
                 color: #333;
+                padding: 1cm 1cm 1cm 1cm;
             }
             .header, .footer {
                 position: fixed;
@@ -71,8 +72,11 @@ export const createPdfContent = (data: {
             }
             .main-content {
                 padding: 0 20px; /* Horizontal padding for content */
+                padding-top: 3.5cm; /* Space for header */
+                justify-content: center;
+                align-items: center;
             }
-            .section { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 3cm; margin-top: 3cm; page-break-inside: avoid; break-inside: avoid; page-break-after: always;}
+            .section { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 3cm; page-break-inside: avoid; break-inside: avoid; page-break-after: always;}
             .section-title { font-size: 20px; font-weight: bold; color: #005a9c; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #005a9c; padding-bottom: 5px; }
             .section-space-images{page-break-inside: avoid; break-inside: avoid; page-break-after: always; margin-top: 3cm;}
             p { margin: 0 0 10px; line-height: 1.4; }
@@ -80,10 +84,9 @@ export const createPdfContent = (data: {
             .checkbox-container { display: flex; align-items: center; margin-bottom: 8px; }
             .checkbox { width: 16px; height: 16px; border: 1px solid #999; margin-right: 10px; text-align: center; line-height: 16px; }
             .checkbox.checked::after { content: '✔'; color: #005a9c; }
-            .image-section { margin-top: 1cm;}
-            .image-header { font-size: 18px; font-weight: bold; color: #333; margin-top: 20px; margin-bottom: 10px; }
-            .image-block { text-align: center; margin-bottom: 20px; }
-            .report-image { width: 400px; height: 400px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 5px; }
+            .image-section { justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 8px; padding: 15px; page-break-inside: avoid; break-inside: avoid; page-break-after: always;}
+            .image-block { text-align: center; }
+            .report-image { width: 400px; height: 400px; border-radius: 5px; padding-top: 3cm; }
             .image-description { font-size: 14px; color: #666; font-style: italic; }
             .image-group-section { border: 1px solid #eee; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
             .header-title {

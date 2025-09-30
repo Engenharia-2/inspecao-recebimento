@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomSearch from '../components/CustomSearch';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -8,6 +8,8 @@ import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
 import { createRelatorio } from '../routes/apiService';
+
+const logo = require('../assets/images/banner-logo-lhf-laranja.jpg');
 
 type RootStackParamList = {
   Home: undefined;
@@ -114,12 +116,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Image source={logo} style={styles.logo} />
       <CustomButton
         title="Iniciar Nova Inspeção"
         onPress={handleNewEntry}
         style={styles.button}
       />
-      <Text style={styles.listTitle}>Inspeções Abertas: </Text>
       <CustomSearch
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -148,10 +150,17 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#f7f7f7',
+    alignItems: 'center',
+  },
+  logo: {
+    resizeMode: 'contain',
+    width: '80%',
+    height: '20%',
   },
   button: {
     marginBottom: 16,
-    height: '20%',
+    height: '8%',
+    width: '100%',
   },
   listTitle: {
     fontSize: 20,

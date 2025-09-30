@@ -12,6 +12,8 @@ export type AttachedImage = {
   name: string; // Nome do arquivo (ex: image.jpg)
   type: string; // Mime type (ex: image/jpeg)
   status?: 'uploading' | 'uploaded' | 'error'; // Status do upload
+
+  path: string; // Caminho do arquivo no dispositivo
 };
 
 /**
@@ -80,4 +82,7 @@ export type ReportData = {
   entryImages?: AttachedImage[];
   assistanceImages?: AttachedImage[];
   qualityImages?: AttachedImage[];
+
+  name?: string; // Nome do relatório
+
 };

@@ -117,7 +117,6 @@ export const createPdfContent = (data: {
                 ${generateCheckbox('Cabo de medição', reportData.returnItems?.includes('Cabo de medição'))}
             </div>
             <div class="section-space-images image-section">
-                <h2 class="section-title">Imagens da entrada</h2>
                 ${generateImageSection('Imagens da Entrada', entryImages)}
             </div>
 
@@ -143,7 +142,6 @@ export const createPdfContent = (data: {
                 ${generateCheckbox('Verificar maleta e membranas', reportData.workingCheck_caseMembranes)}
             </div>
             <div class="image-section section-space-images">
-                <h2 class="section-title">Imagens da Assistência</h2>
                 ${generateImageSection('Imagens da Assistência', assistanceImages)}
             </div>
 
@@ -164,7 +162,6 @@ export const createPdfContent = (data: {
                 <p>${reportData.qualityObservations || 'Nenhuma observação.'}</p>
             </div>
             <div class="image-section section-space-images">
-                <h2 class="section-title">5. Imagens da Finalização</h2>
                 ${generateImageSection('Imagens da Qualidade', qualityImages)}
             </div>
 

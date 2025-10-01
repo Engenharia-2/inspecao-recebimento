@@ -52,6 +52,9 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'black',
   },
+  disabledButton: {
+    backgroundColor: '#ccc',
+  },
   text: {
     fontSize: 18,
     color: 'white',

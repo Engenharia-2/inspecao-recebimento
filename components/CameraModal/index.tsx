@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Text, View, TouchableOpacity, Alert, Modal } from 'react-native';
 import { CameraView } from 'expo-camera';
 import { useAppPermissions } from '../../hooks/useAppPermissions';
@@ -14,14 +14,18 @@ interface CameraModalProps {
 const CameraModal: React.FC<CameraModalProps> = ({ isVisible, onClose, onPictureTaken }) => {
   const cameraRef = useRef<CameraView>(null);
   const { requestCameraPermissions } = useAppPermissions();
+  const [isTakingPicture, setIsTakingPicture] = useState(false);
 
   const handleTakePicture = async () => {
+    if (isTakingPicture) return;
+
     const hasPermission = await requestCameraPermissions();
     if (!hasPermission || !cameraRef.current) {
       Alert.alert('Permissão Necessária', 'A permissão para acessar a câmera é necessária.');
       return;
     }
 
+    setIsTakingPicture(true);
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 0.5, base64: false });
       if (photo && photo.uri) {
@@ -33,6 +37,8 @@ const CameraModal: React.FC<CameraModalProps> = ({ isVisible, onClose, onPicture
     } catch (error) {
       console.error('CameraModal: Erro ao tirar foto:', error);
       Alert.alert('Erro', 'Não foi possível tirar a foto. Tente novamente.');
+    } finally {
+      setIsTakingPicture(false);
     }
   };
 
@@ -49,7 +55,11 @@ const CameraModal: React.FC<CameraModalProps> = ({ isVisible, onClose, onPicture
           <Text style={styles.closeButtonText}>X</Text>
         </TouchableOpacity>
         <View style={styles.controlsContainer}>
-          <TouchableOpacity style={styles.captureButton} onPress={handleTakePicture}>
+          <TouchableOpacity 
+            style={[styles.captureButton, isTakingPicture && styles.disabledButton]} 
+            onPress={handleTakePicture}
+            disabled={isTakingPicture}
+          >
             <View style={styles.captureButtonInner} />
           </TouchableOpacity>
         </View>

@@ -9,7 +9,7 @@ import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
 import { createRelatorio } from '../routes/apiService';
 
-const logo = require('../assets/images/banner-logo-lhf-laranja.jpg');
+const logo = require('../assets/images/banner-logo-laranja.png');
 
 type RootStackParamList = {
   Home: undefined;
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     resizeMode: 'contain',
-    width: '80%',
+    width: '100%',
     height: '20%',
   },
   button: {

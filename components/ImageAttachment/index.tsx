@@ -29,14 +29,21 @@ const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage
     );
   };
 
-    const renderImageItem = ({ item }: { item: AttachedImage }) => (
-    <View key={item.id?.toString() || item.uri}>
-      <TouchableOpacity onPress={() => handleRemoveImage(item)} style={styles.removeImageButton}>
-        <Text style={[styles.buttonText, styles.buttonTextRemove]}>X</Text>
-      </TouchableOpacity>
-      <Image source={{ uri: item.uri }} style={styles.selectedImage} />
-    </View>
-  );
+  const renderImageItem = ({ item }: { item: AttachedImage }) => {
+    const isDeleting = item.status === 'deleting';
+    return (
+      <View key={item.id?.toString() || item.uri} style={isDeleting ? { opacity: 0.5 } : {}}>
+        <TouchableOpacity 
+          onPress={() => handleRemoveImage(item)} 
+          style={styles.removeImageButton}
+          disabled={isDeleting}
+        >
+          <Text style={[styles.buttonText, styles.buttonTextRemove]}>X</Text>
+        </TouchableOpacity>
+        <Image source={{ uri: item.uri }} style={styles.selectedImage} />
+      </View>
+    );
+  };
 
   return (
     <>

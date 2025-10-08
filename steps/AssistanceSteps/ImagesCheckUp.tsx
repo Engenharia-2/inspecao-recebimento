@@ -39,7 +39,7 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
   return (
     <View style={styles.container}>
         <View>
-            <CustomTitle title='Verificação de Imagens e Técnico'/>
+            <CustomTitle title='Verificação de Imagens'/>
             <CustomInput
                 label="Técnico que realizou os testes:"
                 placeholder="Nome do Técnico"

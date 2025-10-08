@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { AttachedImage, ReportData } from '../report/types';
 
-export const API_BASE_URL = 'http://192.168.0.104:3001';
+import Constants from 'expo-constants';
+
+export const API_BASE_URL = Constants.expoConfig?.extra?.API_URL;
+
+// export const API_BASE_URL = 'http://192.168.0.10:3001';
 
 const apiClient = axios.create({
   baseURL: `${API_BASE_URL}/api`,

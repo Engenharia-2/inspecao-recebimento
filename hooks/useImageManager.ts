@@ -80,18 +80,10 @@ export const useImageManager = (stage: 'entry' | 'assistance' | 'quality') => {
     });
   }, [requestCameraPermissions, openCameraModal, processAndSaveImage]);
 
-  const deleteImage = useCallback(async (imageToDelete: AttachedImage) => {
-    // If the image is from FileSystem.documentDirectory, attempt to delete the file
-    if (imageToDelete.uri.startsWith(FileSystem.documentDirectory || '')) {
-      try {
-        await FileSystem.deleteAsync(imageToDelete.uri, { idempotent: true });
-      } catch (error) {
-        console.error('ImageManager: Erro ao deletar arquivo:', error);
-      }
-    }
-    if (imageToDelete.id) {
-      await removeAttachedImage(imageToDelete.id);
-    }
+  const deleteImage = useCallback((imageToDelete: AttachedImage) => {
+    // The logic is now handled by the store slice, which performs an optimistic update.
+    // We just pass the full image object to the action.
+    removeAttachedImage(imageToDelete);
   }, [removeAttachedImage]);
 
   return {

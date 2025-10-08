@@ -11,7 +11,7 @@ export type AttachedImage = {
   uri: string; // URI local do arquivo
   name: string; // Nome do arquivo (ex: image.jpg)
   type: string; // Mime type (ex: image/jpeg)
-  status?: 'uploading' | 'uploaded' | 'error'; // Status do upload
+  status?: 'uploading' | 'uploaded' | 'error' | 'deleting'; // Status do upload
 
   path: string; // Caminho do arquivo no dispositivo
 };

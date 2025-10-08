@@ -11,7 +11,7 @@ export const useKeyboardAwareScrollView = () => {
       () => {
         const currentlyFocusedInput = TextInput.State.currentlyFocusedInput();
         if (currentlyFocusedInput) {
-          currentlyFocusedInput.measure((x, y, width, height, pageX, pageY) => {
+          currentlyFocusedInput.measure((pageY) => {
             if (scrollViewRef.current) {
               scrollViewRef.current.scrollTo({ y: pageY, animated: true });
             }

@@ -7,7 +7,7 @@ import { useAppStore } from '../store';
 import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
-import { createRelatorio } from '../routes/apiService';
+import { createRelatorio, API_BASE_URL } from '../routes/apiService';
 
 const logo = require('../assets/images/banner-logo-laranja.png');
 
@@ -24,15 +24,15 @@ interface HomeScreenProps {
 }
 
 // Memoized SessionItem component
-const SessionItem = React.memo(({ item, onSelect, onDelete }: { item: InspectionSession, onSelect: (id: number) => void, onDelete: (id: number) => void }) => {
+const SessionItem = React.memo(({ item, onSelect, onDelete, isDeleting }: { item: InspectionSession, onSelect: (id: number) => void, onDelete: (id: number) => void, isDeleting: boolean }) => {
   return (
-    <View style={styles.sessionItemContainer}>
-      <TouchableOpacity style={styles.sessionItem} onPress={() => onSelect(item.id)}>
+    <View style={[styles.sessionItemContainer, isDeleting && { opacity: 0.5 }]}>
+      <TouchableOpacity style={styles.sessionItem} onPress={() => onSelect(item.id)} disabled={isDeleting}>
         <Text style={styles.sessionName}>{item.name || 'Inspeção sem OP'}</Text>
         <Text style={styles.sessionDate}>Iniciada em: {new Date(item.startTime).toLocaleString('pt-BR')}</Text>
         {item.endTime && <Text style={styles.sessionDate}>Finalizada em: {new Date(item.endTime).toLocaleString('pt-BR')}</Text>}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(item.id)}>
+      <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(item.id)} disabled={isDeleting}>
         <Text style={styles.deleteButtonText}>X</Text>
       </TouchableOpacity>
     </View>
@@ -49,6 +49,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredSessions, setFilteredSessions] = useState<InspectionSession[]>([]);
+  const [isCreating, setIsCreating] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
       const isFocused = useIsFocused();
 
@@ -71,19 +73,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, [searchQuery, sessions]);
 
   const handleNewEntry = async () => {
+    setIsCreating(true);
     try {
       const novoRelatorio = await createRelatorio({
         name: 'Nova Inspeção',
         startTime: new Date(),
       });
       if (novoRelatorio && novoRelatorio.id) {
-        navigation.navigate('Select', { sessionId: novoRelatorio.id });
+        loadAllSessions();
       } else {
         Alert.alert("Erro", "Não foi possível obter o ID do novo relatório.");
       }
     } catch (error) {
       console.error("Erro ao criar novo relatório:", error);
       Alert.alert("Erro de API", "Falha ao criar uma nova inspeção. Verifique sua conexão e tente novamente.");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -99,28 +104,47 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       [
         {
           text: "Cancelar",
-          style: "cancel"
+          style: "cancel",
+          onPress: () => setDeletingId(null),
         },
-        { 
-          text: "Deletar", 
-          onPress: () => deleteSession(sessionId),
-          style: "destructive"
-        }
-      ]
+        {
+          text: "Deletar",
+          onPress: async () => {
+            setDeletingId(sessionId);
+            try {
+              await deleteSession(sessionId);
+            } catch (error) {
+              console.error("Falha ao deletar a sessão:", error);
+              Alert.alert("Erro", "Não foi possível deletar a sessão.");
+            } finally {
+              setDeletingId(null);
+            }
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true, onDismiss: () => setDeletingId(null) }
     );
   }, [deleteSession]);
 
   const renderSessionItem = useCallback(({ item }: { item: InspectionSession }) => (
-    <SessionItem item={item} onSelect={handleSessionSelect} onDelete={handleDeleteSession} />
-  ), [handleSessionSelect, handleDeleteSession]);
+    <SessionItem 
+      item={item} 
+      onSelect={handleSessionSelect} 
+      onDelete={handleDeleteSession} 
+      isDeleting={item.id === deletingId} 
+    />
+  ), [handleSessionSelect, handleDeleteSession, deletingId]);
 
   return (
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
+      <Text style={{color: 'black', marginVertical: 10}}>API URL: {API_BASE_URL || 'Não definida'}</Text>
       <CustomButton
-        title="Iniciar Nova Inspeção"
+        title={isCreating ? "Criando..." : "Iniciar Nova Inspeção"}
         onPress={handleNewEntry}
         style={styles.button}
+        disabled={isCreating}
       />
       <CustomSearch
         value={searchQuery}

@@ -55,7 +55,7 @@ export default function App() {
   const { isCameraModalVisible, closeCameraModal, _handlePictureTaken } = useAppStore();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, marginTop: 40 }}>
+    <GestureHandlerRootView style={{ flex: 1, }}>
       <AppContent />
       <CameraModal
         isVisible={isCameraModalVisible}

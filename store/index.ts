@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { createSessionSlice, SessionSlice } from './slices/sessionSlice';
-import { createReportSlice, ReportSlice } from './slices/reportSlice';
+import { createReportSlice, FullReportSlice } from './slices/reportSlice';
 import { createUiSlice, UiSlice } from './slices/uiSlice'; // Importa o novo slice
 import React from 'react';
 
 // Combina todos os slices em um único tipo
-export type AppStore = SessionSlice & ReportSlice & UiSlice; // Adiciona o UiSlice ao tipo
+export type AppStore = SessionSlice & FullReportSlice & UiSlice; // Adiciona o UiSlice ao tipo
 
 // Cria o store do Zustand
 export const useAppStore = create<AppStore>()((...a) => ({

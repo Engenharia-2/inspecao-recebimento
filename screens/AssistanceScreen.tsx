@@ -31,18 +31,18 @@ const AssistanceScreen = () => {
       initialPage={0}
       ref={pagerRef}
       onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
-    >
+    >  
       <View key="1">
-        <WorkinCheckStep />
-      </View>
-      <View key="2">
-        <DynamicFieldsStep />
-      </View>
-      <View key="3">
         <CleanCheckStep />
       </View>
-      <View key="4">
+      <View key="2">
+        <WorkinCheckStep />
+      </View>
+      <View key="3">
         <DefectObservationStep />
+      </View>
+      <View key="4">
+        <DynamicFieldsStep />
       </View>
       <View key="5">
         <ImagesCheckUp currentStepIndex={currentPage} />

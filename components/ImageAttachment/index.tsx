@@ -62,7 +62,7 @@ const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage
           <Text style={styles.labelText}>Imagens Anexadas:</Text>
           <FlatList
             data={attachedImages}
-            renderItem={renderImageItem}            keyExtractor={(item) => item.id?.toString() || item.uri}
+            renderItem={renderImageItem}            keyExtractor={(item) => `${item.id}-${item.uri}`}
             horizontal={false} // Changed to vertical scroll
             numColumns={1} // Changed to single column layout
             showsVerticalScrollIndicator={true} // Changed to vertical scroll indicator

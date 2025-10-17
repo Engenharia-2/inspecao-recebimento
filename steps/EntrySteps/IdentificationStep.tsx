@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import CustomInput from '../../components/CustomInput';
-import CustomDropdown from '../../components/CustomDropdown';
 import CustomTitle from '../../components/CustomTitle';
 import CustomQRModal from '../../components/CustomQRmodal';
 import { useAppStore } from '../../store';
@@ -38,10 +37,6 @@ const IdentificationStep = () => {
         onClose={() => setQRModalVisible(false)}
         onQRCodeScanned={(data) => {
           updateReportField('serialNumber', data);
-          const opValue = data.split('-')[1];
-          if (opValue) {
-            updateReportField('op', opValue);
-          }
           setQRModalVisible(false);
         }}
       />

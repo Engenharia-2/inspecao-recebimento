@@ -1,9 +1,12 @@
 import { StateCreator } from 'zustand';
 import { AppStore } from '../index';
-import { isAssistanceFilled, debouncedSaveData } from './stateSlice';
+import { debouncedSaveData } from './stateSlice';
+import { CustomField } from '../../report/types';
+
+export type Stage = 'entry' | 'assistance' | 'quality' | 'assistance_defect' | 'assistance_plan';
 
 export interface CustomFieldSlice {
-  addCustomField: (title: string) => void;
+  addCustomField: (title: string, stage: Stage) => void;
   updateCustomFieldValue: (id: string, value: string) => void;
   removeCustomField: (id: string) => void;
 }
@@ -14,27 +17,32 @@ export const createCustomFieldSlice: StateCreator<
   [],
   CustomFieldSlice
 > = (set, get) => ({
-  addCustomField: (title) => {
-    set(state => {
-      // Garante que customFields seja um array antes de adicionar um novo campo
-      const newCustomFields = [...(state.customFields || []), { id: `${Date.now()}`, title, value: '' }];
-      const newState = { ...state, customFields: newCustomFields };
-      return { ...newState, isAssistanceComplete: isAssistanceFilled(newState) };
-    });
+  addCustomField: (title, stage) => {
+    const newField: CustomField = {
+      id: `${Date.now()}`,
+      title,
+      value: '',
+      stage,
+    };
+    set(state => ({
+      customFields: [...(state.customFields || []), newField],
+    }));
     debouncedSaveData(() => get()._saveData());
   },
+
   updateCustomFieldValue: (id, value) => {
-    set(state => {
-      const newState = { ...state, customFields: state.customFields.map(f => f.id === id ? { ...f, value } : f) };
-      return { ...newState, isAssistanceComplete: isAssistanceFilled(newState) };
-    });
+    set(state => ({
+      customFields: (state.customFields || []).map(f => 
+        f.id === id ? { ...f, value } : f
+      ),
+    }));
     debouncedSaveData(() => get()._saveData());
   },
+
   removeCustomField: (id) => {
-    set(state => {
-      const newState = { ...state, customFields: state.customFields.filter(f => f.id !== id) };
-      return { ...newState, isAssistanceComplete: isAssistanceFilled(newState) };
-    });
+    set(state => ({
+      customFields: (state.customFields || []).filter(f => f.id !== id),
+    }));
     debouncedSaveData(() => get()._saveData());
   },
 });

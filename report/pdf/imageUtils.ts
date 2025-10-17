@@ -76,3 +76,20 @@ export const cleanImagePickerCache = async (uris: string[]) => {
     console.error('ImageUtils: Erro ao limpar o cache do ImagePicker:', error);
   }
 };
+
+import { Asset } from 'expo-asset';
+
+export const convertLogoToBase64 = async (): Promise<string | null> => {
+  try {
+    const asset = Asset.fromModule(require('../../assets/images/logoLHF3.png'));
+    await asset.downloadAsync();
+    const base64 = await FileSystem.readAsStringAsync(asset.localUri!, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    const mimeType = asset.type === 'png' ? 'image/png' : 'image/jpeg';
+    return `data:${mimeType};base64,${base64}`;
+  } catch (error) {
+    console.error('Error converting logo to base64:', error);
+    return null;
+  }
+};

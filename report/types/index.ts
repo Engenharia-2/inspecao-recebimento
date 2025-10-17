@@ -23,6 +23,7 @@ export type CustomField = {
   id: string;
   title: string;
   value: string;
+  stage: 'entry' | 'assistance' | 'quality';
 };
 
 /**
@@ -33,6 +34,7 @@ export type InspectionSession = {
   name: string;
   startTime: string;
   endTime: string | null;
+  status: 'aberta' | 'fechada';
 };
 
 /**
@@ -46,36 +48,21 @@ export type ReportData = {
   model?: string | null;
   orderType?: string | null;
   invoice?: string;
+  estimatedDeliveryDate?: string; // Novo campo
   entryTechnician?: string;
   returnItems?: string[]; // Array de strings para os checkboxes
 
   // Assistance Step Fields
-  cleanCheck_equipmentCleaning?: boolean;
-  cleanCheck_screws?: boolean;
-  cleanCheck_hotGlue?: boolean;
-  cleanCheck_measurementCables?: boolean;
-  defect_part?: string;
-  defect_cause?: string;
-  defect_solution?: string;
-  defect_observations?: string;
-  assistanceTechnician?: string;
-  workingCheck_powerOn?: boolean;
-  workingCheck_buttonsLeds?: boolean;
-  workingCheck_predefinedTests?: boolean;
-  workingCheck_screen?: boolean;
-  workingCheck_caseMembranes?: boolean;
+  cleanCheck?: { [key: string]: boolean };
+  cleanCheck_test1?: string;
+  cleanCheck_test2?: string;
+  cleanCheck_test3?: string;
+  cleanCheck_test4?: string;
+  workingCheck?: { [key: string]: boolean };
 
   // Quality Step Fields
-  finalCheck_case?: boolean;
-  finalCheck_membrane?: boolean;
-  finalCheck_buttons?: boolean;
-  finalCheck_screen?: boolean;
-  finalCheck_test?: boolean;
-  finalCheck_saveReports?: boolean;
-  finalCheck_calibrationPrint?: boolean;
-  finalCheck_backup?: boolean;
+  finalCheck?: { [key: string]: boolean };
   qualityTechnician?: string;
-  qualityObservations?: string;
 
   // Campos dinâmicos e imagens
   customFields?: CustomField[];

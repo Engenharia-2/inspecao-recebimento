@@ -4,36 +4,38 @@ import { Alert } from 'react-native';
 import { useAppStore } from '../../store';
 import { AttachedImage, ReportData } from '../types';
 import { createPdfContent } from './htmlGenerator';
-import { convertImageToBase64 } from './imageUtils';
+import { convertImageToBase64, convertLogoToBase64 } from './imageUtils';
 
 export const generateReportPdfAndShare = async () => {
   const currentDate = new Date();
   const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
 
   const {
-    op, serialNumber, model, orderType, invoice, entryTechnician, returnItems,
-    cleanCheck_equipmentCleaning, cleanCheck_screws, cleanCheck_hotGlue, cleanCheck_measurementCables,
-    defect_part, defect_cause, defect_solution, defect_observations, assistanceTechnician,
-    workingCheck_powerOn, workingCheck_buttonsLeds, workingCheck_predefinedTests, workingCheck_screen, workingCheck_caseMembranes,
-    finalCheck_case, finalCheck_membrane, finalCheck_buttons, finalCheck_screen, finalCheck_test,
-    finalCheck_saveReports, finalCheck_calibrationPrint, finalCheck_backup, qualityTechnician, qualityObservations,
-    entryImages, assistanceImages, qualityImages, customFields, setIsGeneratingPdf,
+    op, serialNumber, model, orderType, invoice, entryTechnician, returnItems, estimatedDeliveryDate, // Entry
+    cleanCheck, cleanCheck_test1, cleanCheck_test2, cleanCheck_test3, cleanCheck_test4, // Assistance (Clean)
+    workingCheck, // Assistance (Work)
+    finalCheck, qualityTechnician, // Quality
+    entryImages, assistanceImages, qualityImages, customFields: allCustomFields, setIsGeneratingPdf, // Common
   } = useAppStore.getState();
 
   setIsGeneratingPdf(true);
 
   try {
-    // Reconstruct reportData object from granular state
+    // Filtrar os customFields por stage
+    const entryFields = allCustomFields.filter(f => f.stage === 'entry');
+    const defectFields = allCustomFields.filter(f => f.stage === 'assistance_defect');
+    const planFields = allCustomFields.filter(f => f.stage === 'assistance_plan');
+    const qualityFields = allCustomFields.filter(f => f.stage === 'quality');
+
+    // Reconstruct the main report object with the new data structure
     const reportData: ReportData = {
-      op, openDate: formattedDate, serialNumber, model, orderType, invoice, entryTechnician, returnItems,
-      cleanCheck_equipmentCleaning, cleanCheck_screws, cleanCheck_hotGlue, cleanCheck_measurementCables,
-      defect_part, defect_cause, defect_solution, defect_observations, assistanceTechnician,
-      workingCheck_powerOn, workingCheck_buttonsLeds, workingCheck_predefinedTests, workingCheck_screen, workingCheck_caseMembranes,
-      finalCheck_case, finalCheck_membrane, finalCheck_buttons, finalCheck_screen, finalCheck_test,
-      finalCheck_saveReports, finalCheck_calibrationPrint, finalCheck_backup, qualityTechnician, qualityObservations,
+      op, openDate: formattedDate, serialNumber, model, orderType, invoice, entryTechnician, returnItems, estimatedDeliveryDate,
+      cleanCheck, cleanCheck_test1, cleanCheck_test2, cleanCheck_test3, cleanCheck_test4,
+      workingCheck,
+      finalCheck, qualityTechnician,
     };
 
-    // Removed logo loading logic
+    const logoBase64 = await convertLogoToBase64();
 
     // 1. Process all images in parallel
     const processImages = async (images: AttachedImage[]) => {
@@ -54,8 +56,12 @@ export const generateReportPdfAndShare = async () => {
 
     // 2. Generate HTML content
     const html = createPdfContent({
+      logoBase64,
       reportData,
-      customFields,
+      entryFields,
+      defectFields,
+      planFields,
+      qualityFields,
       entryImages: processedEntry,
       assistanceImages: processedAssistance,
       qualityImages: processedQuality,

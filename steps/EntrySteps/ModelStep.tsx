@@ -10,6 +10,23 @@ const ModelStep = () => {
   const model = useAppStore((state) => state.model);
   const orderType = useAppStore((state) => state.orderType);
   const invoice = useAppStore((state) => state.invoice);
+  const estimatedDeliveryDate = useAppStore((state) => state.estimatedDeliveryDate);
+
+  const handleDateChange = (text: string) => {
+    // Remove tudo que não for dígito
+    const cleaned = text.replace(/[^\d]/g, '');
+    const length = cleaned.length;
+    let formattedText = cleaned;
+
+    if (length > 2) {
+      formattedText = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+    }
+    if (length > 4) {
+      formattedText = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+    }
+
+    updateReportField('estimatedDeliveryDate', formattedText);
+  };
 
   const modelItems = [
     { label: 'Surge Test 4kv M1', value: 'Surge Test 4kv M1' },
@@ -61,6 +78,14 @@ const ModelStep = () => {
           dropDownDirection={"BOTTOM"}
         />
         <CustomInput label="Nota fiscal" value={invoice || ''} onChangeText={(text) => updateReportField('invoice', text)} placeholder="Digite a nota fiscal" />
+        <CustomInput 
+          label="Data estimada de entrega" 
+          value={estimatedDeliveryDate || ''} 
+          onChangeText={handleDateChange} 
+          placeholder="DD/MM/AAAA" 
+          keyboardType="numeric"
+          maxLength={10} // DD/MM/AAAA
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

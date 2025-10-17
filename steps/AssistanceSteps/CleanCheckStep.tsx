@@ -1,42 +1,71 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import CustomTitle from '../../components/CustomTitle'
 import CustomCheckbox from '../../components/CustomCheckbox';
+import CustomInput from '../../components/CustomInput'; // Importar CustomInput
 import { useAppStore } from '../../store';
-import { Colors }from '../../assets/Colors';
+import { Colors } from '../../assets/Colors';
+import { getCleanChecklistForModel } from '../../models/equipmentConfig';
 
 const CleanCheckStep = () => {
+  const model = useAppStore((state) => state.model);
+  const cleanCheck = useAppStore((state) => state.cleanCheck) || {};
+  const updateCleanCheck = useAppStore((state) => state.updateCleanCheck);
   const updateReportField = useAppStore((state) => state.updateReportField);
-  const cleanCheck_equipmentCleaning = useAppStore((state) => state.cleanCheck_equipmentCleaning);
-  const cleanCheck_screws = useAppStore((state) => state.cleanCheck_screws);
-  const cleanCheck_hotGlue = useAppStore((state) => state.cleanCheck_hotGlue);
-  const cleanCheck_measurementCables = useAppStore((state) => state.cleanCheck_measurementCables);
+
+  // Buscar os valores dos novos campos de teste
+  const test1 = useAppStore((state) => state.cleanCheck_test1);
+  const test2 = useAppStore((state) => state.cleanCheck_test2);
+  const test3 = useAppStore((state) => state.cleanCheck_test3);
+  const test4 = useAppStore((state) => state.cleanCheck_test4);
+
+  const checklist = getCleanChecklistForModel(model);
+  const isMegohmetro = model?.includes('Megohmetro');
 
   return (
     <View style={styles.container}>
-      <CustomTitle title='Limpeza e checagem interna'/>
-      <View style={styles.containerBox}>
-        <CustomCheckbox
-          label="Limpeza do equipamento"
-          value={!!cleanCheck_equipmentCleaning}
-          onValueChange={() => updateReportField('cleanCheck_equipmentCleaning', !cleanCheck_equipmentCleaning)}
-        />
-        <CustomCheckbox
-          label="Parafusos"
-          value={!!cleanCheck_screws}
-          onValueChange={() => updateReportField('cleanCheck_screws', !cleanCheck_screws)}
-        />
-        <CustomCheckbox
-          label="Cola quente"
-          value={!!cleanCheck_hotGlue}
-          onValueChange={() => updateReportField('cleanCheck_hotGlue', !cleanCheck_hotGlue)}
-        />
-        <CustomCheckbox
-          label="Limpar os cabos de medição"
-          value={!!cleanCheck_measurementCables}
-          onValueChange={() => updateReportField('cleanCheck_measurementCables', !cleanCheck_measurementCables)}
-        />
-      </View>
+      <CustomTitle title='Limpeza e checagem interna' />
+      <ScrollView style={styles.containerBox} contentContainerStyle={styles.contentContainer}>
+        {checklist.map((item) => (
+          <CustomCheckbox
+            key={item.label}
+            label={item.label}
+            value={!!cleanCheck[item.label]}
+            onValueChange={() => updateCleanCheck(item.label, !cleanCheck[item.label])}
+            helpText={item.helpText}
+          />
+        ))}
+        
+        {/* Renderização condicional dos campos de texto */}
+        {isMegohmetro && (
+          <View style={styles.inputsContainer}>
+            <CustomInput
+              label="Teste 1"
+              value={test1 || ''}
+              onChangeText={(text) => updateReportField('cleanCheck_test1', text)}
+              placeholder="Valor do Teste 1"
+            />
+            <CustomInput
+              label="Teste 2"
+              value={test2 || ''}
+              onChangeText={(text) => updateReportField('cleanCheck_test2', text)}
+              placeholder="Valor do Teste 2"
+            />
+            <CustomInput
+              label="Teste 3"
+              value={test3 || ''}
+              onChangeText={(text) => updateReportField('cleanCheck_test3', text)}
+              placeholder="Valor do Teste 3"
+            />
+            <CustomInput
+              label="Teste 4"
+              value={test4 || ''}
+              onChangeText={(text) => updateReportField('cleanCheck_test4', text)}
+              placeholder="Valor do Teste 4"
+            />
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -46,9 +75,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  containerBox:{
+  containerBox: {
     width: '100%',
-    alignItems: 'flex-start',
     marginBottom: 20,
     backgroundColor: Colors.white,
     padding: 16,
@@ -56,6 +84,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.lightBorder,
     elevation: 4,
+  },
+  contentContainer: {
+    alignItems: 'flex-start',
+  },
+  inputsContainer: {
+    width: '100%',
+    marginTop: 16,
   },
 });
 

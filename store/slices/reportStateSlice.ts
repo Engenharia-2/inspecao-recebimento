@@ -22,6 +22,9 @@ export type ReportState = ReportData & {
 export interface ReportActions {
   loadReportForSession: (report: ReportData, sessionId: number) => void;
   updateReportField: <K extends keyof ReportData>(field: K, value: ReportData[K]) => void;
+  updateWorkingCheck: (item: string, value: boolean) => void; // <-- Nova ação
+  updateCleanCheck: (item: string, value: boolean) => void; // <-- Nova ação
+  updateFinalCheck: (item: string, value: boolean) => void; // <-- Nova ação
   _saveData: () => void;
   setIsGeneratingPdf: (isGenerating: boolean) => void;
   resetReportState: () => void;
@@ -37,9 +40,9 @@ export const initialState: ReportState = {
   isEntryComplete: false,
   isAssistanceComplete: false,
   isQualityComplete: false,
-  op: '', serialNumber: '', model: null, orderType: null, invoice: '', entryTechnician: '', returnItems: [],
-  cleanCheck_equipmentCleaning: false, cleanCheck_screws: false, cleanCheck_hotGlue: false, cleanCheck_measurementCables: false, defect_part: '', defect_cause: '', defect_solution: '', defect_observations: '', assistanceTechnician: '', workingCheck_powerOn: false, workingCheck_buttonsLeds: false, workingCheck_predefinedTests: false, workingCheck_screen: false, workingCheck_caseMembranes: false,
-  finalCheck_case: false, finalCheck_membrane: false, finalCheck_buttons: false, finalCheck_screen: false, finalCheck_test: false, finalCheck_saveReports: false, finalCheck_calibrationPrint: false, finalCheck_backup: false, qualityTechnician: '', qualityObservations: '',
+  op: '', serialNumber: '', model: null, orderType: null, invoice: '', estimatedDeliveryDate: '', entryTechnician: '', returnItems: [],
+  cleanCheck: {}, cleanCheck_test1: '', cleanCheck_test2: '', cleanCheck_test3: '', cleanCheck_test4: '', workingCheck: {},
+  finalCheck: {}, qualityTechnician: '',
   customFields: [],
   entryImages: [],
   assistanceImages: [],
@@ -111,9 +114,12 @@ export const createReportStateSlice: StateCreator<
     const currentSession = state.measurementSessions.find(s => s.id === currentSessionId);
     const name = currentSession ? currentSession.name : undefined;
 
+    // Combina todas as imagens em um único array para salvar
+    const images = [...entryImages, ...assistanceImages, ...qualityImages];
+
     try {
-      // Inclui o nome no objeto a ser salvo
-      await updateReportData(currentSessionId, { ...reportData, customFields, name });
+      // Inclui o nome e as imagens no objeto a ser salvo
+      await updateReportData(currentSessionId, { ...reportData, customFields, name, images });
     } catch (error) {
       console.error("Falha ao salvar dados do relatório:", error);
     }
@@ -147,6 +153,39 @@ export const createReportStateSlice: StateCreator<
     });
 
     // A lógica de debounce para salvar os dados permanece a mesma
+    debouncedSaveData(() => get()._saveData());
+  },
+
+  // Atualiza um item específico no checklist de funcionamento
+  updateWorkingCheck: (item, value) => {
+    set(state => ({
+      workingCheck: {
+        ...state.workingCheck,
+        [item]: value,
+      },
+    }));
+    debouncedSaveData(() => get()._saveData());
+  },
+
+  // Atualiza um item específico no checklist de limpeza
+  updateCleanCheck: (item, value) => {
+    set(state => ({
+      cleanCheck: {
+        ...state.cleanCheck,
+        [item]: value,
+      },
+    }));
+    debouncedSaveData(() => get()._saveData());
+  },
+
+  // Atualiza um item específico no checklist final
+  updateFinalCheck: (item, value) => {
+    set(state => ({
+      finalCheck: {
+        ...state.finalCheck,
+        [item]: value,
+      },
+    }));
     debouncedSaveData(() => get()._saveData());
   },
 

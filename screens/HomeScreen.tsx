@@ -7,7 +7,7 @@ import { useAppStore } from '../store';
 import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
-import { createRelatorio, API_BASE_URL } from '../routes/apiService';
+import { createRelatorio } from '../routes/apiService';
 
 const logo = require('../assets/images/banner-logo-laranja.png');
 
@@ -24,10 +24,10 @@ interface HomeScreenProps {
 }
 
 // Memoized SessionItem component
-const SessionItem = React.memo(({ item, onSelect, onDelete, isDeleting }: { item: InspectionSession, onSelect: (id: number) => void, onDelete: (id: number) => void, isDeleting: boolean }) => {
+const SessionItem = React.memo(({ item, onSelect, onDelete, isDeleting, isOpen }: { item: InspectionSession, onSelect: (id: number) => void, onDelete: (id: number) => void, isDeleting: boolean, isOpen: boolean }) => {
   return (
-    <View style={[styles.sessionItemContainer, isDeleting && { opacity: 0.5 }]}>
-      <TouchableOpacity style={styles.sessionItem} onPress={() => onSelect(item.id)} disabled={isDeleting}>
+    <View style={[styles.sessionItemContainer, (isDeleting || isOpen) && { opacity: 0.5 }]}>
+      <TouchableOpacity style={styles.sessionItem} onPress={() => onSelect(item.id)} disabled={isDeleting || isOpen}>
         <Text style={styles.sessionName}>{item.name || 'Inspeção sem OP'}</Text>
         <Text style={styles.sessionDate}>Iniciada em: {new Date(item.startTime).toLocaleString('pt-BR')}</Text>
         {item.endTime && <Text style={styles.sessionDate}>Finalizada em: {new Date(item.endTime).toLocaleString('pt-BR')}</Text>}
@@ -133,13 +133,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       onSelect={handleSessionSelect} 
       onDelete={handleDeleteSession} 
       isDeleting={item.id === deletingId} 
+      isOpen={item.status === 'aberta'}
     />
   ), [handleSessionSelect, handleDeleteSession, deletingId]);
 
   return (
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
-      <Text style={{color: 'black', marginVertical: 10}}>API URL: {API_BASE_URL || 'Não definida'}</Text>
       <CustomButton
         title={isCreating ? "Criando..." : "Iniciar Nova Inspeção"}
         onPress={handleNewEntry}

@@ -9,13 +9,13 @@ import { useAppStore } from '../../store';
 import { useKeyboardAwareScrollView } from '../../hooks/useKeyboardAwareScrollView';
 import CustomTitle from '../../components/CustomTitle';
 
-const DynamicFieldsStep: React.FC = () => {
+const ObservationsStep: React.FC = () => {
   // Seleciona a lista inteira para evitar recriação em cada render
   const allCustomFields = useAppStore((state) => state.customFields);
 
   // Filtra a lista com useMemo para otimização
-  const customFields = useMemo(() =>
-    (allCustomFields || []).filter(field => field.stage === 'assistance_plan'),
+  const customFields = useMemo(() => 
+    (allCustomFields || []).filter(field => field.stage === 'entry'),
     [allCustomFields]
   );
 
@@ -27,18 +27,18 @@ const DynamicFieldsStep: React.FC = () => {
 
   const handleAddField = (title: string) => {
     // Adiciona o campo com o stage correto
-    addCustomField(title, 'assistance_plan');
+    addCustomField(title, 'entry');
     setIsModalVisible(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomTitle title='Plano de Ação'/>
+      <CustomTitle title='Observações'/>
         <Text style={styles.label}>
-          Indique o plano de ação com o título e descreva a intervenção necessária.
+          Adicione observações ou campos relevantes para a etapa de entrada.
         </Text>
         <CustomButton
-          title="Adicionar Novo Campo de Texto"
+          title="Adicionar Nova Observação"
           onPress={() => setIsModalVisible(true)}
         />
         <View style={styles.containerCamp}>
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default React.memo(DynamicFieldsStep);
+export default React.memo(ObservationsStep);

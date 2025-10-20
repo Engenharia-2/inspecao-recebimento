@@ -26,32 +26,32 @@ const WorkinCheckStep = () => {
     <>
       <CustomCheckbox
         label="Ligar equipamento"
-        value={!!legacy_powerOn}
-        onValueChange={() => updateReportField('workingCheck_powerOn', !legacy_powerOn)}
+        value={!!workingCheck['Ligar equipamento']}
+        onValueChange={() => updateWorkingCheck('Ligar equipamento', !workingCheck['Ligar equipamento'])}
         helpText="Conecte o equipamento na tomada e verifique se o led de indicação acende."
       />
       <CustomCheckbox
         label="Testar botões e LEDs"
-        value={!!legacy_buttonsLeds}
-        onValueChange={() => updateReportField('workingCheck_buttonsLeds', !legacy_buttonsLeds)}
+        value={!!workingCheck['Testar botões e LEDs']}
+        onValueChange={() => updateWorkingCheck('Testar botões e LEDs', !workingCheck['Testar botões e LEDs'])}
         helpText="Verifique se todos os botões e LEDs estão funcionando corretamente."
       />
       <CustomCheckbox
         label="Realizar testes predefinidos"
-        value={!!legacy_predefinedTests}
-        onValueChange={() => updateReportField('workingCheck_predefinedTests', !legacy_predefinedTests)}
+        value={!!workingCheck['Realizar testes predefinidos']}
+        onValueChange={() => updateWorkingCheck('Realizar testes predefinidos', !workingCheck['Realizar testes predefinidos'])}
         helpText="Execute os testes predefinidos do equipamento e verifique se os resultados estão corretos."
       />
       <CustomCheckbox
         label="Verificar tela"
-        value={!!legacy_screen}
-        onValueChange={() => updateReportField('workingCheck_screen', !legacy_screen)}
+        value={!!workingCheck['Verificar tela']}
+        onValueChange={() => updateWorkingCheck('Verificar tela', !workingCheck['Verificar tela'])}
         helpText="Verifique se a tela está funcionando corretamente, sem manchas ou pixels mortos."
       />
       <CustomCheckbox
         label="Verificar maleta e membranas"
-        value={!!legacy_caseMembranes}
-        onValueChange={() => updateReportField('workingCheck_caseMembranes', !legacy_caseMembranes)}
+        value={!!workingCheck['Verificar maleta e membranas']}
+        onValueChange={() => updateWorkingCheck('Verificar maleta e membranas', !workingCheck['Verificar maleta e membranas'])}
         helpText="Verifique se a maleta e as membranas estão em bom estado."
       />
     </>

@@ -22,8 +22,9 @@ export const isAssistanceFilled = (state: ReportState): boolean => {
   // A etapa é considerada preenchida se pelo menos um item de cada checklist for marcado.
   const cleanCheckStarted = isChecklistStarted(state.cleanCheck);
   const workingCheckStarted = isChecklistStarted(state.workingCheck);
+  const assistanceTechnicianFilled = isValueFilled(state.assistanceTechnician);
   
-  return cleanCheckStarted && workingCheckStarted;
+  return cleanCheckStarted && workingCheckStarted && assistanceTechnicianFilled;
 };
 
 export const isQualityFilled = (state: ReportState): boolean => {

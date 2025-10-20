@@ -12,11 +12,18 @@ const generateCheckbox = (label: string, checked: boolean | undefined) => {
   `;
 };
 
-const generateField = (label: string, value: string | undefined | null) => {
+const generateField = (label: string, value: string | undefined | null, validationStatus?: 'approved' | 'disapproved') => {
+  let icon = '';
+  if (validationStatus === 'approved') {
+    icon = `<img src="data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='green' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'%3e%3c/path%3e%3cpolyline points='22 4 12 14.01 9 11.01'%3e%3c/polyline%3e%3c/svg%3e" style="width: 18px; height: 18px; margin-left: 8px;" />`;
+  } else if (validationStatus === 'disapproved') {
+    icon = `<img src="data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='12' cy='12' r='10'%3e%3c/circle%3e%3cline x1='15' y1='9' x2='9' y2='15'%3e%3c/line%3e%3cline x1='9' y1='9' x2='15' y2='15'%3e%3c/line%3e%3c/svg%3e" style="width: 18px; height: 18px; margin-left: 8px;" />`;
+  }
+
   return `
     <div class="field">
       <strong>${label}:</strong>
-      <span>${value || 'Não informado'}</span>
+      <span style="display: flex; align-items: center;">${value || 'Não informado'}${icon}</span>
     </div>
   `;
 };
@@ -75,6 +82,14 @@ export const createPdfContent = (data: {
 
   const { logoBase64, reportData, entryImages, assistanceImages, qualityImages, entryFields, defectFields, planFields, qualityFields } = data;
 
+  const getValidationStatus = (value: string | undefined) => {
+    if (!value) return undefined;
+    const numericValue = parseFloat(value);
+    if (isNaN(numericValue)) return 'disapproved';
+    if (numericValue >= 290 && numericValue <= 310) return 'approved';
+    return 'disapproved';
+  };
+
   let htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -85,7 +100,8 @@ export const createPdfContent = (data: {
           font-family: 'Helvetica Neue', Arial, sans-serif;
           background-color: #f7f9fc;
           color: #333;
-          padding: 1.5cm;
+          padding: 1cm;
+          padding-top: 1.5cm;
         }
 
         .header {
@@ -157,10 +173,12 @@ export const createPdfContent = (data: {
           min-width: 40%;
         }
 
-        /* Checklist vertical */
+        /* Checklist */
         .checklist-vertical {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 8px;
         }
 
         .checkbox-container {
@@ -168,7 +186,7 @@ export const createPdfContent = (data: {
           align-items: center;
           background: #f1f4fa;
           border-radius: 8px;
-          padding: 6px 10px;
+          padding: 3px 6px;
           margin: 4px 0;
           font-size: 11pt;
         }
@@ -179,15 +197,17 @@ export const createPdfContent = (data: {
         }
         
         .checkbox-symbol {
-          margin-top: 8px;
-          margin-right: 8px;
+          margin-top: 4px;
+          margin-right: 4px;
           font-weight: bold;
         }
 
         /* Imagens */
         .image-group-section {
           padding-top: 1.5cm;
+          padding-bottom: 1cm;
           margin-top: 25px;
+          
           page-break-inside: avoid;
         }
 
@@ -265,10 +285,13 @@ export const createPdfContent = (data: {
           <h2 class="section-title section-title-assistance">2. Assistência Técnica</h2>
           <h4>Limpeza e Checagem Interna:</h4>
           ${generateChecklistSection(reportData.cleanCheck)}
-          ${generateField('Resultado Teste 1', reportData.cleanCheck_test1)}
-          ${generateField('Resultado Teste 2', reportData.cleanCheck_test2)}
-          ${generateField('Resultado Teste 3', reportData.cleanCheck_test3)}
-          ${generateField('Resultado Teste 4', reportData.cleanCheck_test4)}
+          ${reportData.model?.toLowerCase().includes('megohmetro') ? `
+          ${generateField('Resultado Teste 1', reportData.cleanCheck_test1, getValidationStatus(reportData.cleanCheck_test1))}
+          ${generateField('Resultado Teste 2', reportData.cleanCheck_test2, getValidationStatus(reportData.cleanCheck_test2))}
+          ${generateField('Resultado Teste 3', reportData.cleanCheck_test3, getValidationStatus(reportData.cleanCheck_test3))}
+          ${generateField('Resultado Teste 4', reportData.cleanCheck_test4, getValidationStatus(reportData.cleanCheck_test4))}
+          ${reportData.model?.toLowerCase().includes('5kv') ? generateField('Resultado Teste 5', reportData.cleanCheck_test5, getValidationStatus(reportData.cleanCheck_test5)) : ''}
+          ` : ''}
 
           <h4>Verificação de Funcionamento:</h4>
           ${generateChecklistSection(reportData.workingCheck)}
@@ -280,6 +303,7 @@ export const createPdfContent = (data: {
         ${generateImageSection('Imagens da Assistência', assistanceImages)}
 
         <!-- Seção de Qualidade -->
+        <div class="section-space">
         <div class="section">
           <h2 class="section-title">3. Verificação Final da Qualidade</h2>
           ${generateField('Técnico Responsável', reportData.qualityTechnician)}
@@ -287,6 +311,7 @@ export const createPdfContent = (data: {
           <h4>Finalização:</h4>
           ${generateChecklistSection(reportData.finalCheck)}
           ${generateCustomFieldsSection('Observações Finais', qualityFields)}
+        </div>
         </div>
 
         ${generateImageSection('Imagens da Qualidade', qualityImages)}

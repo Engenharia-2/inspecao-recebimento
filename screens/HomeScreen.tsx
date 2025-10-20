@@ -9,6 +9,8 @@ import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
 import { createRelatorio } from '../routes/apiService';
 
+import { useDebounce } from '../hooks/useDebounce';
+
 const logo = require('../assets/images/banner-logo-laranja.png');
 
 type RootStackParamList = {
@@ -48,6 +50,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const deleteSession = useAppStore((state) => state.deleteSession);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [filteredSessions, setFilteredSessions] = useState<InspectionSession[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -61,16 +64,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, [isFocused]); // Removido loadAllSessions das dependências para evitar loops
 
   useEffect(() => {
-    // console.log("HomeScreen: measurementSessions updated:", sessions);
-    if (searchQuery.trim() === '') {
+    if (debouncedSearchQuery.trim() === '') {
       setFilteredSessions(sessions);
     } else {
       const filtered = sessions.filter((session) =>
-        session.name?.toLowerCase().includes(searchQuery.toLowerCase())
+        session.name?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
       setFilteredSessions(filtered);
     }
-  }, [searchQuery, sessions]);
+  }, [debouncedSearchQuery, sessions]);
 
   const handleNewEntry = async () => {
     setIsCreating(true);

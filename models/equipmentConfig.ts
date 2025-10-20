@@ -58,10 +58,6 @@ const megohmetroCleanChecks = [
   { label: 'Parafusos', helpText: 'Checar se há algum parafuso solto e fazer o aperto se necessário.' },
   { label: 'Cola quente', helpText: 'Verificar se está faltando alguma cola quente.' },
   { label: 'Limpar os cabos de medição', helpText: 'Verificar se os cabos de medição estão em boas condições. Com uma estopa e álcool, fazer a limpeza dos cabos e garras.' },
-  { label: 'Teste 1 - 1 min - 250V', helpText: 'Salvar todos os teste na memória do equipamento e não excluir.' },
-  { label: 'Teste 2 - 1 min - 500V', helpText: 'Salvar todos os teste na memória do equipamento e não excluir.' },
-  { label: 'Teste 3 - 1 min - 750V', helpText: 'Salvar todos os teste na memória do equipamento e não excluir.' },
-  { label: 'Teste 4 - 10 min - 1000V', helpText: 'Salvar todos os teste na memória do equipamento e não excluir.' },
 ];
 
 const cleanChecklists: { [key: string]: { label: string; helpText: string; }[] } = {

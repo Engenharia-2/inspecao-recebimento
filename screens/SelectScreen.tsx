@@ -23,7 +23,11 @@ interface SelectScreenProps {
 }
 
 const SelectScreen: React.FC<SelectScreenProps> = ({ navigation }) => {
-  const { isEntryComplete, isAssistanceComplete, isQualityComplete, currentSession } = useAppStore();
+  const isEntryComplete = useAppStore(state => state.isEntryComplete);
+  const isAssistanceComplete = useAppStore(state => state.isAssistanceComplete);
+  const isQualityComplete = useAppStore(state => state.isQualityComplete);
+  const currentSession = useAppStore(state => state.currentSession);
+
   const { isGenerating, generateReport } = useReportGenerator(); // Import hook
 
   useEffect(() => {

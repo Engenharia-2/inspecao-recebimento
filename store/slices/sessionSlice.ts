@@ -53,7 +53,8 @@ export const createSessionSlice: StateCreator<
     set({ isSessionsLoading: true });
     try {
       const sessions = await fetchRelatorios();
-      set({ measurementSessions: sessions as InspectionSession[] });
+      const sortedSessions = (sessions as InspectionSession[]).sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+      set({ measurementSessions: sortedSessions });
     } catch (err) {
       console.error("sessionSlice: Failed to load sessions:", err);
     } finally {

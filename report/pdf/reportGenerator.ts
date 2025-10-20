@@ -12,7 +12,7 @@ export const generateReportPdfAndShare = async () => {
 
   const {
     op, serialNumber, model, orderType, invoice, entryTechnician, returnItems, estimatedDeliveryDate, // Entry
-    cleanCheck, cleanCheck_test1, cleanCheck_test2, cleanCheck_test3, cleanCheck_test4, // Assistance (Clean)
+    cleanCheck, cleanCheck_test1, cleanCheck_test2, cleanCheck_test3, cleanCheck_test4, cleanCheck_test5, // Assistance (Clean)
     workingCheck, // Assistance (Work)
     finalCheck, qualityTechnician, // Quality
     entryImages, assistanceImages, qualityImages, customFields: allCustomFields, setIsGeneratingPdf, // Common
@@ -30,11 +30,10 @@ export const generateReportPdfAndShare = async () => {
     // Reconstruct the main report object with the new data structure
     const reportData: ReportData = {
       op, openDate: formattedDate, serialNumber, model, orderType, invoice, entryTechnician, returnItems, estimatedDeliveryDate,
-      cleanCheck, cleanCheck_test1, cleanCheck_test2, cleanCheck_test3, cleanCheck_test4,
+      cleanCheck, cleanCheck_test1, cleanCheck_test2, cleanCheck_test3, cleanCheck_test4, cleanCheck_test5,
       workingCheck,
       finalCheck, qualityTechnician,
     };
-
     const logoBase64 = await convertLogoToBase64();
 
     // 1. Process all images in parallel

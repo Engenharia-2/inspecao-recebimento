@@ -30,50 +30,50 @@ const FinalCheckStep = () => {
     <>
       <CustomCheckbox
         label="Maleta"
-        value={!!legacy_case}
-        onValueChange={() => updateReportField('finalCheck_case', !legacy_case)}
+        value={!!finalCheck['Maleta']}
+        onValueChange={() => updateFinalCheck('Maleta', !finalCheck['Maleta'])}
         helpText="Verifique se a maleta está em bom estado."
       />
       <CustomCheckbox
         label="Membrana"
-        value={!!legacy_membrane}
-        onValueChange={() => updateReportField('finalCheck_membrane', !legacy_membrane)}
+        value={!!finalCheck['Membrana']}
+        onValueChange={() => updateFinalCheck('Membrana', !finalCheck['Membrana'])}
         helpText="Verifique se a membrana está em bom estado."
       />
       <CustomCheckbox
         label="Botões"
-        value={!!legacy_buttons}
-        onValueChange={() => updateReportField('finalCheck_buttons', !legacy_buttons)}
+        value={!!finalCheck['Botões']}
+        onValueChange={() => updateFinalCheck('Botões', !finalCheck['Botões'])}
         helpText="Verifique se todos os botões estão funcionando corretamente."
       />
       <CustomCheckbox
         label="Tela"
-        value={!!legacy_screen}
-        onValueChange={() => updateReportField('finalCheck_screen', !legacy_screen)}
+        value={!!finalCheck['Tela']}
+        onValueChange={() => updateFinalCheck('Tela', !finalCheck['Tela'])}
         helpText="Verifique se a tela está funcionando corretamente, sem manchas ou pixels mortos."
       />
       <CustomCheckbox
         label="Teste"
-        value={!!legacy_test}
-        onValueChange={() => updateReportField('finalCheck_test', !legacy_test)}
+        value={!!finalCheck['Teste']}
+        onValueChange={() => updateFinalCheck('Teste', !finalCheck['Teste'])}
         helpText="Realize um teste final em tensão máxima por 5 minutos "
       />
       <CustomCheckbox
         label="Salvar Relatórios"
-        value={!!legacy_saveReports}
-        onValueChange={() => updateReportField('finalCheck_saveReports', !legacy_saveReports)}
+        value={!!finalCheck['Salvar Relatórios']}
+        onValueChange={() => updateFinalCheck('Salvar Relatórios', !finalCheck['Salvar Relatórios'])}
         helpText="Salve os relatórios no equipamento."
       />
       <CustomCheckbox
         label="Print da calibração"
-        value={!!legacy_calibrationPrint}
-        onValueChange={() => updateReportField('finalCheck_calibrationPrint', !legacy_calibrationPrint)}
+        value={!!finalCheck['Print da calibração']}
+        onValueChange={() => updateFinalCheck('Print da calibração', !finalCheck['Print da calibração'])}
         helpText="Tire um print da tela de calibração para o relatório e salvar a imagem."
       />
       <CustomCheckbox
         label="Fazer backup do equipamento"
-        value={!!legacy_backup}
-        onValueChange={() => updateReportField('finalCheck_backup', !legacy_backup)}
+        value={!!finalCheck['Fazer backup do equipamento']}
+        onValueChange={() => updateFinalCheck('Fazer backup do equipamento', !finalCheck['Fazer backup do equipamento'])}
         helpText="Faça o backup dos dados do equipamento."
       />
     </>

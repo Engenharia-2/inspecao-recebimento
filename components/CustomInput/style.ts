@@ -22,4 +22,12 @@ export const styles = StyleSheet.create({
     color: Colors.textLight,
     elevation: 4,
   },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  icon: {
+    marginLeft: 10,
+  },
 });

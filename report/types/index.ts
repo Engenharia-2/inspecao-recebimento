@@ -58,7 +58,9 @@ export type ReportData = {
   cleanCheck_test2?: string;
   cleanCheck_test3?: string;
   cleanCheck_test4?: string;
+  cleanCheck_test5?: string;
   workingCheck?: { [key: string]: boolean };
+  assistanceTechnician?: string;
 
   // Quality Step Fields
   finalCheck?: { [key: string]: boolean };

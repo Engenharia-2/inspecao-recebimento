@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { AppStore } from '../index';
 import { ReportData, CustomField, AttachedImage } from '../../report/types';
-import { updateReportData } from '../../routes/apiService';
+import { updateReportData, sendEntryCompleteEmail } from '../../routes/apiService';
 import { isEntryFilled, isAssistanceFilled, isQualityFilled, debouncedSaveData } from './stateSlice';
 import { buildImageURL } from './imageSlice';
 
@@ -129,7 +129,14 @@ export const createReportStateSlice: StateCreator<
   // Atualiza um campo e recalcula o status de preenchimento
   updateReportField: (field, value) => {
     set(state => {
+      const wasEntryComplete = state.isEntryComplete;
       const newState = { ...state, [field]: value };
+      const isNowEntryComplete = isEntryFilled(newState);
+
+      // Se a entrada acabou de ser concluída, chame a API para enviar o e-mail
+      if (isNowEntryComplete && !wasEntryComplete && newState.currentSessionId) {
+        sendEntryCompleteEmail(newState.currentSessionId);
+      }
 
       // Se o campo for 'op', também atualiza o nome da sessão na lista de sessões
       if (field === 'op' && state.currentSessionId) {
@@ -139,7 +146,7 @@ export const createReportStateSlice: StateCreator<
         return {
           ...newState,
           measurementSessions: updatedSessions, // Atualiza a lista de sessões
-          isEntryComplete: isEntryFilled(newState),
+          isEntryComplete: isNowEntryComplete,
           isAssistanceComplete: isAssistanceFilled(newState),
           isQualityComplete: isQualityFilled(newState),
         };
@@ -147,7 +154,7 @@ export const createReportStateSlice: StateCreator<
 
       return {
         ...newState,
-        isEntryComplete: isEntryFilled(newState),
+        isEntryComplete: isNowEntryComplete,
         isAssistanceComplete: isAssistanceFilled(newState),
         isQualityComplete: isQualityFilled(newState),
       };

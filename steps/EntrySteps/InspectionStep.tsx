@@ -25,12 +25,6 @@ const InspectionStep = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <CustomTitle title='Inspeção dos componentes'/>
-      <CustomInput 
-        label="Funcionário"
-        value={entryTechnician || ''} 
-        onChangeText={(text) => updateReportField('entryTechnician', text)} 
-        placeholder="Digite o nome do funcionário"
-      />
       
       <View style={styles.containerBox}>
         <Text style={styles.groupTitle}>Retornos</Text>

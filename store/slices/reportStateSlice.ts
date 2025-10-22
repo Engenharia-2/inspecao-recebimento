@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { AppStore } from '../index';
 import { ReportData, CustomField, AttachedImage } from '../../report/types';
-import { updateReportData, sendEntryCompleteEmail } from '../../routes/apiService';
+import { updateReportData } from '../../routes/apiService';
 import { isEntryFilled, isAssistanceFilled, isQualityFilled, debouncedSaveData } from './sessionStateSlice';
 import { buildImageURL } from './imageSlice';
 
@@ -74,7 +74,7 @@ export const createReportStateSlice: StateCreator<
     const entryImages = mapAndBuildImageUrls(report.images?.filter(img => img.stage === 'entry'));
     const assistanceImages = mapAndBuildImageUrls(report.images?.filter(img => img.stage === 'assistance'));
     const qualityImages = mapAndBuildImageUrls(report.images?.filter(img => img.stage === 'quality'));
-
+ 
     // Garante que customFields seja sempre um array, fazendo o parse se for uma string JSON
     let parsedCustomFields = report.customFields;
     if (typeof parsedCustomFields === 'string') {

@@ -63,7 +63,7 @@ export const createSessionSlice: StateCreator<
   startNewSession: async () => {
     try {
       const now = new Date();
-      const sessionName = `Nova Inspeção ${now.toLocaleString('pt-BR')}`;
+      const sessionName = `Nova Inspeção`;
       const newRelatorio = await createRelatorio({ name: sessionName, startTime: now });
       if (newRelatorio && newRelatorio.id) {
         await get().loadAllSessions();

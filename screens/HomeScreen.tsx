@@ -1,15 +1,11 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomSearch from '../components/CustomSearch';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useAppStore } from '../store';
-import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../assets/Colors';
 import { InspectionSession } from '../report/types';
-import { createRelatorio } from '../routes/apiService';
-
-import { useDebounce } from '../hooks/useDebounce';
+import { useSessionManagement } from '../hooks/useSessionManagement';
 
 const logo = require('../assets/images/banner-logo-laranja.png');
 
@@ -42,94 +38,20 @@ const SessionItem = React.memo(({ item, onSelect, onDelete, isDeleting, isOpen }
 });
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const sessions = useAppStore((state) => state.measurementSessions);
-  const isLoading = useAppStore((state) => state.isSessionsLoading);
-  const loadAllSessions = useAppStore((state) => state.loadAllSessions);
-  const selectSession = useAppStore((state) => state.selectSession);
-  const startNewSession = useAppStore((state) => state.startNewSession);
-  const deleteSession = useAppStore((state) => state.deleteSession);
+  const {
+    sessions,
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    filteredSessions,
+    isCreating,
+    deletingId,
+    handleNewEntry,
+    handleSessionSelect,
+    handleDeleteSession,
+  } = useSessionManagement(navigation);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const [filteredSessions, setFilteredSessions] = useState<InspectionSession[]>([]);
-  const [isCreating, setIsCreating] = useState(false);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-
-      const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused) {
-      loadAllSessions();
-    }
-  }, [isFocused]); // Removido loadAllSessions das dependências para evitar loops
-
-  useEffect(() => {
-    if (debouncedSearchQuery.trim() === '') {
-      setFilteredSessions(sessions);
-    } else {
-      const filtered = sessions.filter((session) =>
-        session.name?.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-      );
-      setFilteredSessions(filtered);
-    }
-  }, [debouncedSearchQuery, sessions]);
-
-  const handleNewEntry = async () => {
-    setIsCreating(true);
-    try {
-      const novoRelatorio = await createRelatorio({
-        name: 'Nova Inspeção',
-        startTime: new Date(),
-      });
-      if (novoRelatorio && novoRelatorio.id) {
-        loadAllSessions();
-      } else {
-        Alert.alert("Erro", "Não foi possível obter o ID do novo relatório.");
-      }
-    } catch (error) {
-      console.error("Erro ao criar novo relatório:", error);
-      Alert.alert("Erro de API", "Falha ao criar uma nova inspeção. Verifique sua conexão e tente novamente.");
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const handleSessionSelect = useCallback(async (sessionId: number) => {
-    await selectSession(sessionId);
-    navigation.navigate('Select', { sessionId });
-  }, [selectSession, navigation]);
-
-  const handleDeleteSession = useCallback((sessionId: number) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      "Tem certeza que deseja deletar esta sessão? Esta ação não pode ser desfeita.",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-          onPress: () => setDeletingId(null),
-        },
-        {
-          text: "Deletar",
-          onPress: async () => {
-            setDeletingId(sessionId);
-            try {
-              await deleteSession(sessionId);
-            } catch (error) {
-              console.error("Falha ao deletar a sessão:", error);
-              Alert.alert("Erro", "Não foi possível deletar a sessão.");
-            } finally {
-              setDeletingId(null);
-            }
-          },
-          style: "destructive",
-        },
-      ],
-      { cancelable: true, onDismiss: () => setDeletingId(null) }
-    );
-  }, [deleteSession]);
-
-  const renderSessionItem = useCallback(({ item }: { item: InspectionSession }) => (
+  const renderSessionItem = React.useCallback(({ item }: { item: InspectionSession }) => (
     <SessionItem 
       item={item} 
       onSelect={handleSessionSelect} 

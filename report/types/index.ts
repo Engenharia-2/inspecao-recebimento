@@ -78,7 +78,6 @@ export type ReportData = {
   startTime?: any;
   endTime?: any;
   //FinalStep ???
-  recipientEmail?: string; //<- retirar do estado
-
+  recipientEmail?: string; 
 
 };

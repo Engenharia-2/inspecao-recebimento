@@ -40,7 +40,7 @@ export const generateReportPdfAndShare = async () => {
     const processImages = async (images: AttachedImage[]) => {
       const processed = await Promise.all(
         images.map(async (img) => {
-          const result = await convertImageToBase64(img.uri, img.description || '',);
+          const result = await convertImageToBase64(img.uri);
           return result ? { ...img, uri: result.base64 } : null;
         })
       );

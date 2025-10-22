@@ -8,7 +8,7 @@ import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 import CustomTitle from '../../components/CustomTitle';
 
-type AssistanceRouteProp = RouteProp<{ Assistance: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Assistance'>;
+type AssistanceRouteProp = RouteProp<{ Assistance: { newImageUri?: string, returnStepIndex?: number } }, 'Assistance'>;
 
 type ImagesCheckUpProps = {
   currentStepIndex: number;
@@ -26,7 +26,7 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
   useEffect(() => {
     if (route.params?.newImageUri) {
             processAndSaveImage({ uri: route.params.newImageUri });
-      navigation.setParams({ newImageUri: undefined, imageDescription: undefined });
+      navigation.setParams({ newImageUri: undefined});
 
       if (route.params.returnStepIndex !== undefined) {
         // This assumes the parent screen has a way to set its current page/step
@@ -34,7 +34,7 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
         // For now, we just ensure the image is processed.
       }
     }
-  }, [route.params?.newImageUri, route.params?.imageDescription, processAndSaveImage, navigation, route.params?.returnStepIndex]);
+  }, [route.params?.newImageUri, processAndSaveImage, navigation, route.params?.returnStepIndex]);
 
   return (
     <View style={styles.container}>

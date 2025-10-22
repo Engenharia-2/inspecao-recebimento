@@ -7,7 +7,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomTitle from '../../components/CustomTitle';
 
-type QualityRouteProp = RouteProp<{ Quality: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Quality'>;
+type QualityRouteProp = RouteProp<{ Quality: { newImageUri?: string, returnStepIndex?: number } }, 'Quality'>;
 
 type FinalImagesCheckProps = {
   currentStepIndex: number;
@@ -23,13 +23,13 @@ const FinalImagesCheck: React.FC<FinalImagesCheckProps> = ({ currentStepIndex })
   useEffect(() => {
     if (route.params?.newImageUri) {
             processAndSaveImage({ uri: route.params.newImageUri });
-      navigation.setParams({ newImageUri: undefined, imageDescription: undefined });
+      navigation.setParams({ newImageUri: undefined,});
 
       if (route.params.returnStepIndex !== undefined) {
         // The parent screen will handle the navigation
       }
     }
-  }, [route.params?.newImageUri, route.params?.imageDescription, processAndSaveImage, navigation]);
+  }, [route.params?.newImageUri, processAndSaveImage, navigation]);
 
   return (
     <SafeAreaView style={styles.container}>

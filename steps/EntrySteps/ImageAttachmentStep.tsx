@@ -5,11 +5,10 @@ import { useImageManager } from '../../hooks/useImageManager';
 import { useAppPermissions } from '../../hooks/useAppPermissions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
-import CustomButton from '../../components/CustomButton'; 
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'; 
 import CustomTitle from '../../components/CustomTitle';
 
-type EntryRouteProp = RouteProp<{ Entry: { newImageUri?: string, imageDescription?: string, returnStepIndex?: number } }, 'Entry'>;
+type EntryRouteProp = RouteProp<{ Entry: { newImageUri?: string, returnStepIndex?: number } }, 'Entry'>;
 
 type ImageAttachmentStepProps = {
   currentStepIndex: number;
@@ -31,7 +30,7 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
     if (route.params?.newImageUri) {
             processAndSaveImage({ uri: route.params.newImageUri });
       // Clear params to avoid re-triggering the effect
-      navigation.setParams({ newImageUri: undefined, imageDescription: undefined });
+      navigation.setParams({ newImageUri: undefined,});
 
       // Navigate to the returned step index
       if (route.params.returnStepIndex !== undefined) {
@@ -40,7 +39,7 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
         // For now, we just ensure the image is processed.
       }
     }
-  }, [route.params?.newImageUri, route.params?.imageDescription, processAndSaveImage, navigation, route.params?.returnStepIndex]);
+  }, [route.params?.newImageUri, processAndSaveImage, navigation, route.params?.returnStepIndex]);
 
 
   return (

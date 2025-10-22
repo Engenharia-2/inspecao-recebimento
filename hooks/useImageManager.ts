@@ -10,9 +10,15 @@ import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 export const useImageManager = (stage: 'entry' | 'assistance' | 'quality') => {
   const addAttachedImage = useAppStore((state) => state.addAttachedImage);
   const removeAttachedImage = useAppStore((state) => state.removeAttachedImage);
+  const currentSessionId = useAppStore((state) => state.currentSessionId);
   const { requestCameraPermissions } = useAppPermissions(); // Get permissions hook
 
       const processAndSaveImage = useCallback(async (imageAsset: { uri: string, fileName?: string, type?: string }) => {
+    if (!currentSessionId) {
+      Alert.alert("Erro", "Nenhuma sessão ativa. Não é possível adicionar imagens.");
+      return;
+    }
+
     try {
       // Redimensiona e comprime a imagem
       const manipulatedImage = await manipulateAsync(
@@ -27,14 +33,14 @@ export const useImageManager = (stage: 'entry' | 'assistance' | 'quality') => {
         name: imageAsset.fileName || `photo_${Date.now()}.jpg`,
         type: 'image/jpeg', // O formato de saída é sempre JPEG
         stage,
-        sessionId: 0, // Handled by slice
+        sessionId: currentSessionId, // <--- FIXED
       });
 
     } catch (error) {
       console.error("Erro ao processar a imagem:", error);
       Alert.alert("Erro", "Não foi possível processar a imagem.");
     }
-  }, [stage, addAttachedImage]);
+  }, [stage, addAttachedImage, currentSessionId]);
 
   const handleImageLibraryResponse = useCallback(async (response: ImagePickerResponse) => {
     if (response.didCancel) return;

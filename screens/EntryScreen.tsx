@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import IdentificationStep from '../steps/EntrySteps/IdentificationStep';
@@ -7,24 +7,15 @@ import InspectionStep from '../steps/EntrySteps/InspectionStep';
 import ImageAttachmentStep from '../steps/EntrySteps/ImageAttachmentStep';
 import ObservationsStep from '../steps/EntrySteps/ObservationsStep';
 import FinalStep from '../steps/EntrySteps/FinalStep'; // Importar o novo step
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
+import { useStepIndex } from '../hooks/useStepIndex';
 
 type EntryScreenRouteProp = RouteProp<{ Entry: { returnStepIndex?: number } }, 'Entry'>;
 
 const EntryScreen = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const pagerRef = useRef<PagerView>(null);
-  const route = useRoute<EntryScreenRouteProp>();
-  const navigation = useNavigation<any>();
 
-  useEffect(() => {
-    if (route.params?.returnStepIndex !== undefined) {
-      pagerRef.current?.setPage(route.params.returnStepIndex);
-      setCurrentPage(route.params.returnStepIndex);
-      // Clear the param to prevent re-triggering on subsequent renders
-      navigation.setParams({ returnStepIndex: undefined });
-    }
-  }, [route.params?.returnStepIndex, navigation]);
+  useStepIndex(pagerRef);
 
   return (
     <PagerView

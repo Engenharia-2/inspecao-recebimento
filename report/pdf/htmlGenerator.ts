@@ -214,7 +214,7 @@ export const createPdfContent = (data: {
         .image-grid {
           display: flex;
           flex-wrap: wrap;
-          gap: 10px;
+          gap: 20px;
           justify-content: center;
         }
 
@@ -228,6 +228,7 @@ export const createPdfContent = (data: {
           border-radius: 8px;
           object-fit: cover;
           box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          margin-top: 2cm;
         }
 
         .footer {

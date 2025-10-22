@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { AppStore } from '../index';
-import { debouncedSaveData } from './stateSlice';
+import { debouncedSaveData } from './sessionStateSlice';
 import { CustomField } from '../../report/types';
 
 export type Stage = 'entry' | 'assistance' | 'quality' | 'assistance_defect' | 'assistance_plan';

@@ -68,13 +68,12 @@ export const deleteImage = async (imageId: number): Promise<void> => {
   await axios.delete(`${API_BASE_URL}/api/images/${imageId}`);
 };
 
-export const sendEntryCompleteEmail = async (reportId: number) => {
+export const sendEntryCompleteEmail = async (reportId: number, recipientEmail: string) => {
   try {
-    console.log('Enviando e-mail de conclusão da entrada para o relatório com ID:', reportId);
-    await apiClient.post('/send-entry-email', { reportId });
+    await apiClient.post('/send-entry-email', { reportId, recipientEmail });
     return { success: true, message: 'E-mail de conclusão da entrada enviado com sucesso.' };
   } catch (error) {
     console.error('Falha ao enviar e-mail de conclusão da entrada:', error);
-    return { success: false, message: 'Falha ao enviar e-mail de conclusão da entrada.' };
+    return { success: false, message: 'Falha ao enviar e-mail de conclusão da entrada.', error: error };
   }
 };

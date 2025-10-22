@@ -2,7 +2,7 @@ import { StateCreator } from 'zustand';
 import { AppStore } from '../index';
 import { ReportData, CustomField, AttachedImage } from '../../report/types';
 import { updateReportData, sendEntryCompleteEmail } from '../../routes/apiService';
-import { isEntryFilled, isAssistanceFilled, isQualityFilled, debouncedSaveData } from './stateSlice';
+import { isEntryFilled, isAssistanceFilled, isQualityFilled, debouncedSaveData } from './sessionStateSlice';
 import { buildImageURL } from './imageSlice';
 
 // --- Interfaces de Estado e Ações ---
@@ -17,6 +17,7 @@ export type ReportState = ReportData & {
   entryImages: AttachedImage[];
   assistanceImages: AttachedImage[];
   qualityImages: AttachedImage[];
+  recipientEmail: string;
 };
 
 export interface ReportActions {
@@ -48,6 +49,7 @@ export const initialState: ReportState = {
   entryImages: [],
   assistanceImages: [],
   qualityImages: [],
+  recipientEmail: '',
 };
 
 // --- Criação do Slice ---
@@ -134,9 +136,9 @@ export const createReportStateSlice: StateCreator<
       const isNowEntryComplete = isEntryFilled(newState);
 
       // Se a entrada acabou de ser concluída, chame a API para enviar o e-mail
-      if (isNowEntryComplete && !wasEntryComplete && newState.currentSessionId) {
-        sendEntryCompleteEmail(newState.currentSessionId);
-      }
+      // if (isNowEntryComplete && !wasEntryComplete && newState.currentSessionId && newState.recipientEmail) {
+      //   sendEntryCompleteEmail(newState.currentSessionId, newState.recipientEmail);
+      // }
 
       // Se o campo for 'op', também atualiza o nome da sessão na lista de sessões
       if (field === 'op' && state.currentSessionId) {

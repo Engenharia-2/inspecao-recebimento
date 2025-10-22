@@ -32,6 +32,8 @@ const equipmentChecklists: { [key: string]: { label: string; helpText: string; }
   'Surge Test 4kv bancada': CURRENT_FORM,
   'Surge teste 15kv': CURRENT_FORM,
   'Surge teste 15kv MT': CURRENT_FORM,
+  'Engenheirado': CURRENT_FORM,
+  'TTR': CURRENT_FORM,
 };
 
 export const getChecklistForModel = (model: string | null): { label: string; helpText: string; }[] | string => {
@@ -74,6 +76,8 @@ const cleanChecklists: { [key: string]: { label: string; helpText: string; }[] }
   'Surge Test 4kv bancada': standardCleanChecks,
   'Surge teste 15kv': standardCleanChecks,
   'Surge teste 15kv MT': standardCleanChecks,
+  'Engenheirado': standardCleanChecks,
+  'TTR': standardCleanChecks,
 };
 
 export const getCleanChecklistForModel = (model: string | null): { label: string; helpText: string; }[] => {
@@ -122,6 +126,8 @@ const finalChecklists: { [key: string]: { label: string; helpText: string; }[] |
   'Surge Test 4kv bancada': CURRENT_FORM,
   'Surge teste 15kv': CURRENT_FORM,
   'Surge teste 15kv MT': CURRENT_FORM,
+  'Engenheirado': CURRENT_FORM,
+  'TTR': CURRENT_FORM,
 };
 
 export const getFinalChecklistForModel = (model: string | null): { label: string; helpText: string; }[] | string => {

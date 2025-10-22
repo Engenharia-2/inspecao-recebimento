@@ -7,7 +7,6 @@ import {
   fetchRelatorioById,
   fetchRelatorios,
   updateReportData,
-  updateRelatorio,
 } from '../../routes/apiService';
 
 export interface SessionState {
@@ -72,7 +71,7 @@ export const createSessionSlice: StateCreator<
         return newRelatorio.id;
       }
       return null;
-    } catch (err) {
+    } catch (err) { 
       console.error("sessionSlice: Failed to start new session:", err);
       return null;
     }

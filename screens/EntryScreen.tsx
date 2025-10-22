@@ -5,7 +5,8 @@ import IdentificationStep from '../steps/EntrySteps/IdentificationStep';
 import ModelStep from '../steps/EntrySteps/ModelStep';
 import InspectionStep from '../steps/EntrySteps/InspectionStep';
 import ImageAttachmentStep from '../steps/EntrySteps/ImageAttachmentStep';
-import ObservationsStep from '../steps/EntrySteps/ObservationsStep'; // Importar o novo step
+import ObservationsStep from '../steps/EntrySteps/ObservationsStep';
+import FinalStep from '../steps/EntrySteps/FinalStep'; // Importar o novo step
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 
 type EntryScreenRouteProp = RouteProp<{ Entry: { returnStepIndex?: number } }, 'Entry'>;
@@ -46,6 +47,9 @@ const EntryScreen = () => {
       </View>
       <View key="5">
         <ImageAttachmentStep currentStepIndex={currentPage} />
+      </View>
+      <View key="6">
+        <FinalStep />
       </View>
 
     </PagerView>

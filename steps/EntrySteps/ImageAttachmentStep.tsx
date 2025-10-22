@@ -15,13 +15,9 @@ type ImageAttachmentStepProps = {
   currentStepIndex: number;
 };
 
-import CustomInput from '../../components/CustomInput';
-
 const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIndex }) => {
   const { pickImage, takePicture, deleteImage, processAndSaveImage } = useImageManager('entry');
   const entryImages = useAppStore((state) => state.entryImages);
-  const updateReportField = useAppStore((state) => state.updateReportField);
-  const entryTechnician = useAppStore((state) => state.entryTechnician);
   const { requestCameraPermissions, requestPhotoLibraryPermissions } = useAppPermissions();
   const route = useRoute<EntryRouteProp>();
   const navigation = useNavigation<any>();
@@ -51,12 +47,6 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
     <SafeAreaView style={styles.container}>
       <CustomTitle title='Imagens de Entrada'/>
       <View style={styles.content}>
-        <CustomInput 
-          label="Funcionário"
-          value={entryTechnician || ''} 
-          onChangeText={(text) => updateReportField('entryTechnician', text)} 
-          placeholder="Digite o nome do funcionário"
-        />
         <ImageAttachment
           attachedImages={entryImages}
           onPickImage={pickImage}
@@ -64,12 +54,7 @@ const ImageAttachmentStep: React.FC<ImageAttachmentStepProps> = ({ currentStepIn
           onDeleteImage={deleteImage}
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          title="Fechar formulário"
-          onPress={() => navigation.navigate('Select')}
-        />
-      </View>
+
     </SafeAreaView>
   );
 };

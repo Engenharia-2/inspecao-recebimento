@@ -71,7 +71,14 @@ export type ReportData = {
   entryImages?: AttachedImage[];
   assistanceImages?: AttachedImage[];
   qualityImages?: AttachedImage[];
-
   name?: string; // Nome do relatório
+
+  //sessionSlice ???
+  id?: number; // ID do relatório
+  startTime?: any;
+  endTime?: any;
+  //FinalStep ???
+  recipientEmail?: string; //<- retirar do estado
+
 
 };

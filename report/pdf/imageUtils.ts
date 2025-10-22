@@ -10,7 +10,7 @@ const IMAGE_COMPRESSION_QUALITY = 0.7; // 0 to 1, 1 being no compression
  * Converte uma URI de imagem local (do ImagePicker ou Camera) para Base64.
  * Redimensiona e comprime a imagem antes da conversão para otimizar o tamanho do PDF.
  * @param {string} uri - A URI do arquivo de imagem local.
- * @returns {Promise<{ base64: string } | null>} A string Base64 da imagem e sua descrição, ou null em caso de erro.
+ * @returns {Promise<{ base64: string } | null>} A string Base64 da imagem, ou null em caso de erro.
  */
 export const convertImageToBase64 = async (uri: string, ): Promise<{ base64: string,  } | null> => {
   if (!uri) {

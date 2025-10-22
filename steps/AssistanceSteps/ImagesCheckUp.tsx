@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
 import { useImageManager } from '../../hooks/useImageManager';
 import { useAppStore } from '../../store';
-import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 import CustomTitle from '../../components/CustomTitle';
-
-type AssistanceRouteProp = RouteProp<{ Assistance: { newImageUri?: string, returnStepIndex?: number } }, 'Assistance'>;
+import { useImageRouteParams } from '../../hooks/useImageRouteParams';
 
 type ImagesCheckUpProps = {
   currentStepIndex: number;
@@ -20,21 +19,9 @@ const ImagesCheckUp: React.FC<ImagesCheckUpProps> = ({ currentStepIndex }) => {
   const assistanceImages = useAppStore((state) => state.assistanceImages);
 
   const { pickImage, takePicture, deleteImage, processAndSaveImage } = useImageManager('assistance');
-  const route = useRoute<AssistanceRouteProp>();
   const navigation = useNavigation<any>();
 
-  useEffect(() => {
-    if (route.params?.newImageUri) {
-            processAndSaveImage({ uri: route.params.newImageUri });
-      navigation.setParams({ newImageUri: undefined});
-
-      if (route.params.returnStepIndex !== undefined) {
-        // This assumes the parent screen has a way to set its current page/step
-        // For PagerView, you might need to use a ref to setPage
-        // For now, we just ensure the image is processed.
-      }
-    }
-  }, [route.params?.newImageUri, processAndSaveImage, navigation, route.params?.returnStepIndex]);
+  useImageRouteParams(processAndSaveImage);
 
   return (
     <View style={styles.container}>

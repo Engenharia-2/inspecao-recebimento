@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import ImageAttachment from '../../components/ImageAttachment';
 import { useImageManager } from '../../hooks/useImageManager';
 import { useAppStore } from '../../store';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomTitle from '../../components/CustomTitle';
-
-type QualityRouteProp = RouteProp<{ Quality: { newImageUri?: string, returnStepIndex?: number } }, 'Quality'>;
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useImageRouteParams } from '../../hooks/useImageRouteParams';
 
 type FinalImagesCheckProps = {
   currentStepIndex: number;
@@ -17,19 +15,8 @@ const FinalImagesCheck: React.FC<FinalImagesCheckProps> = ({ currentStepIndex })
   const qualityImages = useAppStore((state) => state.qualityImages);
 
   const { pickImage, takePicture, deleteImage, processAndSaveImage } = useImageManager('quality');
-  const navigation = useNavigation<any>();
-  const route = useRoute<QualityRouteProp>();
 
-  useEffect(() => {
-    if (route.params?.newImageUri) {
-            processAndSaveImage({ uri: route.params.newImageUri });
-      navigation.setParams({ newImageUri: undefined,});
-
-      if (route.params.returnStepIndex !== undefined) {
-        // The parent screen will handle the navigation
-      }
-    }
-  }, [route.params?.newImageUri, processAndSaveImage, navigation]);
+  useImageRouteParams(processAndSaveImage);
 
   return (
     <SafeAreaView style={styles.container}>

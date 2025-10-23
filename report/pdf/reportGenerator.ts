@@ -82,7 +82,7 @@ export const generateReportPdfAndShare = async () => {
 
   } catch (error) {
     console.error('ReportGenerator: Erro ao gerar ou compartilhar PDF:', error);
-    Alert.alert('Erro', 'Não foi possível gerar o relatório PDF.');
+    Alert.alert('Erro', 'Não foi possível gerar o relatório PDF. Tente novamente.');
   } finally {
     setIsGeneratingPdf(false);
   }

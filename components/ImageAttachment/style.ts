@@ -96,4 +96,16 @@ export const styles = StyleSheet.create({
     paddingLeft: 20, 
     paddingVertical: 10,
   },
+  imageStatusContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -30 }, { translateY: -10 }],
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })

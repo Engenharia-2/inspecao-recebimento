@@ -45,7 +45,7 @@ const SelectScreen: React.FC<SelectScreenProps> = ({ navigation }) => {
   };
 
   const handleGenerateReport = () => {
-    generateReport({ onComplete: () => navigation.navigate('Home') });
+    generateReport();
   };
 
   return (

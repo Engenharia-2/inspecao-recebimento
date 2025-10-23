@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import axios from 'axios';
 import { AttachedImage, ReportData } from '../report/types';
 
@@ -13,6 +14,31 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// --- Interceptor de Erro Global ---
+apiClient.interceptors.response.use(
+  (response) => response, // Passa adiante respostas de sucesso
+  (error) => {
+    // Verifica se a requisição é para upload de imagem
+    const isImageUpload = error.config.url.includes('/images');
+
+    if (!isImageUpload) {
+      let errorMessage = 'Ocorreu um erro inesperado.';
+      if (error.response) {
+        // Erro com resposta do servidor (4xx, 5xx)
+        errorMessage = `Erro no Servidor: ${error.response.status}\nPor favor, tente novamente mais tarde.`;
+      } else if (error.request) {
+        // Erro sem resposta do servidor (ex: rede, servidor offline)
+        errorMessage = 'Falha na comunicação.\nVerifique sua conexão com a rede e se o servidor está online.';
+      }
+      Alert.alert('Falha na Operação', errorMessage);
+    }
+
+    // Rejeita a promessa para que o erro possa ser tratado localmente se necessário
+    return Promise.reject(error);
+  }
+);
+
 
 // Função auxiliar para repetição automática em caso de erro de rede
 const withRetry = async <T>(apiCall: () => Promise<T>, retries = 3, delay = 2000): Promise<T> => {

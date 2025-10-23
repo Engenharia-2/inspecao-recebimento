@@ -205,7 +205,6 @@ export const createPdfContent = (data: {
         /* Imagens */
         .image-group-section {
           padding-top: 1.5cm;
-          padding-bottom: 1cm;
           margin-top: 25px;
           
           page-break-inside: avoid;
@@ -214,7 +213,7 @@ export const createPdfContent = (data: {
         .image-grid {
           display: flex;
           flex-wrap: wrap;
-          gap: 20px;
+          gap: 80px;
           justify-content: center;
         }
 
@@ -287,11 +286,11 @@ export const createPdfContent = (data: {
           <h4>Limpeza e Checagem Interna:</h4>
           ${generateChecklistSection(reportData.cleanCheck)}
           ${reportData.model?.toLowerCase().includes('megohmetro') ? `
-          ${generateField('Resultado Teste 1', reportData.cleanCheck_test1, getValidationStatus(reportData.cleanCheck_test1))}
-          ${generateField('Resultado Teste 2', reportData.cleanCheck_test2, getValidationStatus(reportData.cleanCheck_test2))}
-          ${generateField('Resultado Teste 3', reportData.cleanCheck_test3, getValidationStatus(reportData.cleanCheck_test3))}
-          ${generateField('Resultado Teste 4', reportData.cleanCheck_test4, getValidationStatus(reportData.cleanCheck_test4))}
-          ${reportData.model?.toLowerCase().includes('5kv') ? generateField('Resultado Teste 5', reportData.cleanCheck_test5, getValidationStatus(reportData.cleanCheck_test5)) : ''}
+          ${generateField('Resultado Teste 1', reportData.cleanCheck_test1 ? `${reportData.cleanCheck_test1} MΩ` : undefined, getValidationStatus(reportData.cleanCheck_test1))}
+          ${generateField('Resultado Teste 2', reportData.cleanCheck_test2 ? `${reportData.cleanCheck_test2} MΩ` : undefined, getValidationStatus(reportData.cleanCheck_test2))}
+          ${generateField('Resultado Teste 3', reportData.cleanCheck_test3 ? `${reportData.cleanCheck_test3} MΩ` : undefined, getValidationStatus(reportData.cleanCheck_test3))}
+          ${generateField('Resultado Teste 4', reportData.cleanCheck_test4 ? `${reportData.cleanCheck_test4} MΩ` : undefined, getValidationStatus(reportData.cleanCheck_test4))}
+          ${reportData.model?.toLowerCase().includes('5kv') ? generateField('Resultado Teste 5', reportData.cleanCheck_test5 ? `${reportData.cleanCheck_test5} MΩ` : undefined, getValidationStatus(reportData.cleanCheck_test5)) : ''}
           ` : ''}
 
           <h4>Verificação de Funcionamento:</h4>

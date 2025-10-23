@@ -3,14 +3,7 @@ import { Alert, FlatList, Image, Text, TouchableOpacity, View } from 'react-nati
 import { styles } from './style';
 import { Colors } from '../../assets/Colors';
 import { AttachedImage } from '../../report/types'; // Use AttachedImage from report/types
-import { MaterialIcons } from '@expo/vector-icons';
-
-type ImageAttachmentProps = { 
-  attachedImages: AttachedImage[];
-  onPickImage: () => void; // No description parameter
-  onTakePicture: () => void; // No description parameter
-  onDeleteImage: (image: AttachedImage) => void;
-};
+import { MaterialIcons, Feather } from '@expo/vector-icons';
 
 const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage, onTakePicture, onDeleteImage }) => {
 
@@ -31,6 +24,32 @@ const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage
 
   const renderImageItem = ({ item }: { item: AttachedImage }) => {
     const isDeleting = item.status === 'deleting';
+
+    const getStatusComponent = () => {
+      if (item.status === 'uploading') {
+        return (
+          <View style={styles.imageStatusContainer}>
+            <Feather name="loader" size={20} color="white" />
+          </View>
+        );
+      }
+      if (item.status === 'uploaded') {
+        return (
+          <View style={[styles.imageStatusContainer, { backgroundColor: 'rgba(0, 128, 0, 0.7)' }]}>
+            <Feather name="check-circle" size={20} color="white" />
+          </View>
+        );
+      }
+      if (item.status === 'error') {
+        return (
+          <View style={[styles.imageStatusContainer, { backgroundColor: 'rgba(255, 0, 0, 0.7)' }]}>
+            <Feather name="x-circle" size={20} color="white" />
+          </View>
+        );
+      }
+      return null;
+    };
+
     return (
       <View key={item.id?.toString() || item.uri} style={isDeleting ? { opacity: 0.5 } : {}}>
         <TouchableOpacity 
@@ -41,6 +60,7 @@ const ImageAttachment: FC<ImageAttachmentProps> = ({ attachedImages, onPickImage
           <Text style={[styles.buttonText, styles.buttonTextRemove]}>X</Text>
         </TouchableOpacity>
         <Image source={{ uri: item.uri }} style={styles.selectedImage} />
+        {getStatusComponent()}
       </View>
     );
   };
